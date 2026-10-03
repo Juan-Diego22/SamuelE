@@ -1,50 +1,91 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!-- 
+SYNC IMPACT REPORT
+------------------
+Version change: 0.0.0 (template) → 1.0.0 (initial ratification)
+Added sections:
+  - 7 core principles (Costo cero, Móvil primero, Privacidad, Alcance, Calidad, Entrega, Decisiones)
+  - Flujo de trabajo
+  - Governance (versionado semántico, enmiendas)
+Modified principles: None (initial version)
+Removed sections: None (initial version)
+Template placeholders: All resolved
+TODO items: None
+-->
 
-## Core Principles
+# Catálogo y Gestión de Repostería Casera — Constitución
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+## Principios Fundamentales
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### I. Costo Cero para el Negocio
+El negocio no pagará costos recurrentes de infraestructura o servicios.
+**MUST** usar únicamente capas gratuitas de servicios que permitan uso comercial. **MUST** verificar términos de servicio y límites de cada proveedor antes de adoptarlo. El dominio propio es opcional y sería el único gasto posible.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+_Verificación_: Antes de agregar cualquier servicio externo, documentar su modelo de precios y confirmar que la capa gratuita permite uso comercial en el ADR correspondiente.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### II. Móvil Primero y Simplicidad para la Administradora
+El panel de administración se diseña prioritariamente para celular, ya que la administradora lo usará casi siempre desde un dispositivo móvil.
+**MUST** validar toda pantalla del panel en un dispositivo móvil real. **SHOULD** limitar el flujo de publicación a pocos pasos (carga de foto, categorización, descripción básica). **MUST** incluir accesibilidad básica: contraste adecuado, texto alternativo en imágenes, navegación clara.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+_Verificación_: Cada cambio en el panel se prueba en celular antes de pasar a revisión. La definición de terminado incluye prueba en dispositivo real.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### III. Privacidad y Seguridad por Defecto
+Las fotos publicadas no expondrán metadatos sensibles, especialmente ubicación GPS. El panel exige autenticación de la administradora.
+**MUST** eliminar metadatos (EXIF, GPS) de toda foto subida. **MUST** proteger el panel con autenticación. **MUST** validar tipo y tamaño de todo archivo subido. **MUST** no almacenar secretos en el repositorio.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+_Verificación_: Revisar metadatos de fotos procesadas con herramientas estándar. Verificar que panel redirige sin autenticación. Revisar en cada PR que no hay secretos en código.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### IV. Alcance Disciplinado
+Solo se implementan las funcionalidades definidas en el PRD de la Fase 1. Inventario, finanzas y recetas quedan fuera hasta que una evaluación explícita las apruebe.
+**MUST** rechazar cambios que amplíen el alcance sin aprobación previa. **SHOULD** documentar en el ADR cualquier decisión de posponer funcionalidad.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+_Verificación_: En cada PR, validar que los cambios caen dentro del alcance de Fase 1 documentado. Usar el ADR como referencia.
+
+### V. Calidad Verificable
+La lógica de negocio y los flujos críticos de cada historia tienen pruebas automatizadas basadas en los criterios de aceptación del PRD.
+**MUST** escribir pruebas para lógica de negocio (ej. procesamiento de fotos, autenticación) y flujos críticos de usuario. **SHOULD** usar los criterios de aceptación del PRD como base para diseñar pruebas. No se exige un porcentaje de cobertura mínimo.
+
+_Verificación_: Revisar que toda lógica de negocio nueva tiene pruebas. Validar que criterios de aceptación tienen tests asociados.
+
+### VI. Entrega Continua
+CI corre en cada cambio. La rama `main` siempre está en estado estable y desplegable. Todo cambio entra por Pull Request.
+**MUST** ejecutar CI en cada PR. **MUST** que CI esté en verde antes de fusionar. **MUST** usar Pull Request para todo cambio en `main`.
+
+_Verificación_: Revisar que el repositorio tiene CI configurado. Validar que `main` solo acepta cambios por PR con CI pasando.
+
+### VII. Decisiones y Documentación
+Toda decisión técnica relevante (stack, base de datos, almacenamiento, hosting, autenticación, formatos de imagen) queda registrada en ADRs. El README se mantiene al día.
+**MUST** crear un ADR para decisiones técnicas significativas. **MUST** mantener el README actualizado tras cambios. **SHOULD** referenciar el ADR correspondiente en la descripción del PR.
+
+_Verificación_: Revisar que existen ADRs para decisiones iniciales (stack, BD, almacenamiento, hosting, autenticación). Validar que README describe la estructura del proyecto y cómo ejecutarlo.
+
+## Flujo de Trabajo
+
+**Rama principal**: `main` siempre está en estado desplegable. Solo recibe cambios por Pull Request.
+
+**Ramas de cambio**: Cada cambio va en una rama corta con prefijo `feature/`, `fix/`, `docs/` o `chore/`. Se fusiona con squash a `main`.
+
+**Versionado**: Versiones semánticas con etiquetas `vX.Y.Z` en `main`.
+
+**Commits**: Conventional Commits en inglés, con ámbito y referencia a la historia (formato: `<type>(<scope>): <subject>` / `Refs: HU-NN`).
+
+**Definición de terminado**: 
+- Criterios de aceptación del PRD cumplidos.
+- Probado en un celular real.
+- CI en verde.
+- Documentación actualizada.
+
+**Idioma**:
+- Especificaciones, documentación e interfaz: **español**.
+- Identificadores de código, ramas, commits: **inglés**.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+Esta constitución se rige por versionado semántico e invoca cambios MAJOR/MINOR/PATCH según criterios estándar:
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+- **MAJOR**: Cambios incompatibles en principios (eliminación o redefinición fundamental).
+- **MINOR**: Adición de nuevo principio o expansión material de una sección.
+- **PATCH**: Aclaraciones, correcciones de redacción, refinamientos sin cambiar el sentido.
+
+Las enmiendas requieren justificación escrita (en el ADR correspondiente o en la PR del cambio constitucional). La constitución es la autoridad suprema en gobernanza; otras prácticas se alinean a ella.
+
+**Versión**: 1.0.0 | **Ratificada**: 2026-10-02 | **Última enmienda**: 2026-10-02
