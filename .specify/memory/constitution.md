@@ -1,14 +1,14 @@
 <!-- 
 SYNC IMPACT REPORT
 ------------------
-Version change: 0.0.0 (template) → 1.0.0 (initial ratification)
-Added sections:
-  - 7 core principles (Costo cero, Móvil primero, Privacidad, Alcance, Calidad, Entrega, Decisiones)
-  - Flujo de trabajo
-  - Governance (versionado semántico, enmiendas)
-Modified principles: None (initial version)
-Removed sections: None (initial version)
-Template placeholders: All resolved
+Version change: 1.0.0 (initial ratification) → 1.1.0 (alignment with PRD Fase 1)
+Added/Enhanced sections:
+  - Principio II: métricas Lighthouse ≥90, límite de imágenes, accesibilidad prescriptiva (contraste ≥4.5:1, teclado)
+  - Principio VII: "Código organizado" como requisito explícito de mantenibilidad
+  - Definición de terminado: énfasis en prueba en celular real (no solo escritorio), código legible
+Modified principles: II (Móvil Primero → Móvil Primero, Rendimiento y Accesibilidad), VII (Decisiones y Documentación → Decisiones, Documentación y Mantenibilidad)
+Removed sections: None
+Template placeholders: None
 TODO items: None
 -->
 
@@ -22,11 +22,11 @@ El negocio no pagará costos recurrentes de infraestructura o servicios.
 
 _Verificación_: Antes de agregar cualquier servicio externo, documentar su modelo de precios y confirmar que la capa gratuita permite uso comercial en el ADR correspondiente.
 
-### II. Móvil Primero y Simplicidad para la Administradora
-El panel de administración se diseña prioritariamente para celular, ya que la administradora lo usará casi siempre desde un dispositivo móvil.
-**MUST** validar toda pantalla del panel en un dispositivo móvil real. **SHOULD** limitar el flujo de publicación a pocos pasos (carga de foto, categorización, descripción básica). **MUST** incluir accesibilidad básica: contraste adecuado, texto alternativo en imágenes, navegación clara.
+### II. Móvil Primero, Rendimiento y Accesibilidad
+La aplicación (catálogo público y panel de administración) se diseña prioritariamente para celular. El panel debe usarse cómodamente desde un dispositivo móvil, y el catálogo debe ser completamente funcional en pantallas pequeñas.
+**MUST** validar toda pantalla en un dispositivo móvil real. **MUST** lograr puntuación ≥90 en Lighthouse (móvil). **MUST** limitar imágenes a referencia de cientos de KB. **SHOULD** limitar el flujo de publicación a pocos pasos (carga de foto, categorización, descripción básica). **MUST** incluir accesibilidad: contraste ≥4.5:1, texto alternativo en imágenes, navegación con teclado en panel.
 
-_Verificación_: Cada cambio en el panel se prueba en celular antes de pasar a revisión. La definición de terminado incluye prueba en dispositivo real.
+_Verificación_: Cada cambio se prueba en celular real antes de pasar a revisión. Auditar Lighthouse antes de PR. Revisar contraste y a11y con herramientas estándar. La definición de terminado incluye prueba en dispositivo real.
 
 ### III. Privacidad y Seguridad por Defecto
 Las fotos publicadas no expondrán metadatos sensibles, especialmente ubicación GPS. El panel exige autenticación de la administradora.
@@ -52,11 +52,11 @@ CI corre en cada cambio. La rama `main` siempre está en estado estable y desple
 
 _Verificación_: Revisar que el repositorio tiene CI configurado. Validar que `main` solo acepta cambios por PR con CI pasando.
 
-### VII. Decisiones y Documentación
-Toda decisión técnica relevante (stack, base de datos, almacenamiento, hosting, autenticación, formatos de imagen) queda registrada en ADRs. El README se mantiene al día.
-**MUST** crear un ADR para decisiones técnicas significativas. **MUST** mantener el README actualizado tras cambios. **SHOULD** referenciar el ADR correspondiente en la descripción del PR.
+### VII. Decisiones, Documentación y Mantenibilidad
+Toda decisión técnica relevante (stack, base de datos, almacenamiento, hosting, autenticación, formatos de imagen) queda registrada en ADRs. El README se mantiene al día. El código se organiza en una estructura clara y legible.
+**MUST** crear un ADR para decisiones técnicas significativas. **MUST** mantener el README actualizado tras cambios. **MUST** organizar el código en módulos/componentes claros con nombres descriptivos. **SHOULD** referenciar el ADR correspondiente en la descripción del PR.
 
-_Verificación_: Revisar que existen ADRs para decisiones iniciales (stack, BD, almacenamiento, hosting, autenticación). Validar que README describe la estructura del proyecto y cómo ejecutarlo.
+_Verificación_: Revisar que existen ADRs para decisiones iniciales (stack, BD, almacenamiento, hosting, autenticación). Validar que README describe la estructura del proyecto y cómo ejecutarlo. En cada PR, evaluar legibilidad y organización del código nuevo.
 
 ## Flujo de Trabajo
 
@@ -70,12 +70,13 @@ _Verificación_: Revisar que existen ADRs para decisiones iniciales (stack, BD, 
 
 **Definición de terminado**: 
 - Criterios de aceptación del PRD cumplidos.
-- Probado en un celular real.
+- **Probado en un celular real** (no solo navegador de escritorio).
 - CI en verde.
-- Documentación actualizada.
+- Documentación actualizada (README, ADR si aplica).
+- Código organizado y legible.
 
 **Idioma**:
-- Especificaciones, documentación e interfaz: **español**.
+- Especificaciones, documentación, comentarios del código e interfaz: **español**.
 - Identificadores de código, ramas, commits: **inglés**.
 
 ## Governance
@@ -88,4 +89,4 @@ Esta constitución se rige por versionado semántico e invoca cambios MAJOR/MINO
 
 Las enmiendas requieren justificación escrita (en el ADR correspondiente o en la PR del cambio constitucional). La constitución es la autoridad suprema en gobernanza; otras prácticas se alinean a ella.
 
-**Versión**: 1.0.0 | **Ratificada**: 2026-10-02 | **Última enmienda**: 2026-10-02
+**Versión**: 1.1.0 | **Ratificada**: 2026-10-02 | **Última enmienda**: 2026-10-05
