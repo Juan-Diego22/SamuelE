@@ -52,6 +52,6 @@ Mockups interactivos de la Fase 1, diseñados móvil primero (390×844) a partir
 - **Estado vacío del catálogo** (HU-15): pedido en el brief, aún no está en el mockup.
 - **Estados de error y de carga de foto** en "Nuevo/editar trabajo": pedidos, aún no están.
 - **Versión tableta/escritorio del panel**: solo existe la del catálogo.
-- **Fuente script**: `Dancing Script` no se carga desde ningún proveedor; sin ella el navegador usa `Brush Script MT` o la cursiva del sistema. Definir en un ADR cómo se servirá la fuente (autoalojada, para mantener costo cero).
+- ~~**Fuente script**: definir en un ADR cómo se servirá `Dancing Script`.~~ Resuelto en [ADR 0007](../adr/0007-fuentes-tipograficas.md): autoalojada en WOFF2.
 - **Datos de ejemplo**: teléfono, zona y anticipación del pie son ficticios (preguntas abiertas del PRD).
 - **Verificación visual**: el HTML no se ha revisado aún en un navegador ni en un celular real (exigido por la definición de terminado).

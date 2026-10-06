@@ -1,50 +1,57 @@
-# ADR 0004: Almacenamiento de Imágenes
+# ADR 0004: Almacenamiento de imágenes
 
-**Status**: Accepted
+- **Estado**: aceptada
+- **Fecha**: 2026-10-05
+- **Revisión**: 2026-10-06. Se verifican límites. Las imágenes se sirven a través del Worker, porque `r2.dev` es solo para desarrollo. Se corrige el nombre del bucket, se documenta que R2 exige registrar un medio de pago y se reemplaza el "job de limpieza" por retiro lógico.
 
-**Date**: 2026-10-05
+## Contexto
 
-## Context
+HU-08 pide guardar cada foto en varios tamaños optimizados y conservar la original (documento de contexto, Fase 1). El principio III exige que lo publicado no exponga metadatos como la ubicación GPS. Las imágenes son lo más pesado del sitio y lo que más se descarga.
 
-HU-08 requiere:
-- Subida de fotos editadas (originales sin modificación).
-- Generación automática de derivadas (miniatura, mediano, grande) en WebP.
-- Eliminación de metadatos (EXIF, GPS).
-- Costo recurrente $0 sin cargos por egreso de datos.
+## Decisión
 
-## Decision
-
-- **Almacenamiento**: R2 (Cloudflare).
-- **Estructura**:
+- **Servicio**: Cloudflare R2, un bucket privado llamado `samuele-media` (los nombres de bucket no admiten tildes).
+- **Estructura de claves**:
   ```
-  r2://samuelé-bucket/
-  ├── originals/{workId}.{ext}
-  ├── thumbs/{workId}.webp
-  ├── medium/{workId}.webp
-  └── large/{workId}.webp
+  originals/{workId}-{version}.jpg          privada, nunca se sirve
+  works/{workId}-{version}/sm.{webp|jpg}    miniatura (grilla)
+  works/{workId}-{version}/md.{webp|jpg}    mediana (detalle en celular)
+  works/{workId}-{version}/lg.{webp|jpg}    grande (detalle en escritorio)
   ```
+  `version` cambia al reemplazar la foto (HU-09). Así cada URL es inmutable y se puede cachear para siempre.
+- **Entrega**: el Worker sirve `GET /media/works/...` leyendo de R2 por binding, con `Cache-Control: public, max-age=31536000, immutable`. La ruta `originals/` no tiene endpoint público.
+- **Retiro (HU-10)**: retirar un trabajo lo oculta del catálogo (borrado lógico) y no borra archivos. El borrado físico queda fuera de la Fase 1.
 
-## Rationale
+## Verificación de costos (principio I)
 
-- **Capa gratuita R2**: 10GB almacenamiento, sin cargo por egreso de datos (a diferencia de S3).
-- **Integración Workers**: el procesamiento de derivadas (vía Canvas en el navegador, ver ADR 0005) genera WebP en el cliente; el servidor solo valida y guarda.
-- **URLs públicas**: R2 genera URLs permanentes que sirven desde el CDN de Cloudflare.
+Consultado el 2026-10-06 en [R2 pricing](https://developers.cloudflare.com/r2/pricing/).
 
-## Consequences
+| Límite (capa gratuita, clase Standard) | Valor |
+|---|---|
+| Almacenamiento | 10 GB-mes |
+| Operaciones clase A (escrituras) | 1 millón/mes |
+| Operaciones clase B (lecturas) | 10 millones/mes |
+| Egreso | Gratis |
 
-- Las derivadas (thumb, medium, large) se generan en el navegador y se suben como archivos separados. Si el navegador no soporta Canvas, la subida falla (graceful degradation: mostrar error claro).
-- El original se guarda sin modificar (respaldo y futura edición).
-- Limpieza manual: si se retira un trabajo, hay que borrar sus derivadas de R2 (habrá un job de limpieza en el backend).
+- **Holgura**: con una original de unos 3 MB y derivadas por menos de 0,5 MB, cada trabajo ocupa cerca de 3,5 MB. Caben unos 2.800 trabajos.
+- **Medio de pago**: activar R2 exige registrar una tarjeta o PayPal en la cuenta de Cloudflare, aunque no cobra dentro de la capa gratuita. A diferencia de Workers y D1, **R2 sí factura si se supera la capa gratuita**. Hay que configurar una alerta de facturación en la cuenta.
+- **`r2.dev`**: según la [documentación](https://developers.cloudflare.com/r2/buckets/public-buckets/) tiene límite de velocidad y es "solo para desarrollo". Por eso no se usa.
 
-## Alternatives Considered
+## Consecuencias
 
-1. **S3 (AWS)**: capa gratuita limitada y cargos por egreso. Rechazado.
-2. **Procesamiento en servidor con Sharp**: no corre en Workers. Habría que usar Durable Objects (más complejo) o un edge function adicional. Rechazado.
-3. **Imgix/Cloudinary**: tienen capa gratuita, pero con límites de transformaciones. Rechazado.
+- Cada imagen servida consume un request del Worker (100.000/día, ADR 0002) y una lectura clase B. La caché del navegador evita repetirlos en visitas recurrentes.
+- Sin dominio propio no se usa la caché de borde de Cloudflare para las imágenes. Si se compra un dominio, se puede activar después sin cambiar las claves.
+- Guardar la original permite regenerar derivadas en el futuro (por ejemplo, la edición automática de la Fase 2). Al ser privada, su EXIF nunca se expone.
 
-## References
+## Alternativas consideradas
 
-- Principio I: Costo Cero para el Negocio
-- Principio II: Rendimiento
-- HU-08: Optimización automática de la foto
-- ADR 0002: Stack Tecnológico
+1. **Bucket público en `r2.dev`**: descartada por ser solo para desarrollo.
+2. **Cloudflare Images (almacenamiento)**: requiere plan de pago.
+3. **Amazon S3**: la capa gratuita dura 12 meses y cobra egreso.
+4. **Guardar imágenes en D1**: descartada por el límite de 500 MB por base y por ser un mal uso de la base.
+
+## Referencias
+
+- Constitución: principios I, II y III.
+- PRD Fase 1: HU-07, HU-08, HU-09, HU-10.
+- ADR 0002, ADR 0005.
