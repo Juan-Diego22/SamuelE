@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "codegraph": {
+      "command": "wsl.exe",
+      "args": [
+        "-d",
+        "Ubuntu",
+        "--cd",
+        "/home/usuario/proyectos/SamuelE",
+        "--",
+        "/home/usuario/.local/bin/codegraph",
+        "serve",
+        "--mcp",
+        "--path",
+        "/home/usuario/proyectos/SamuelE"
+      ]
+    }
+  }
+}
