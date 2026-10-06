@@ -1,59 +1,50 @@
-# ADR 0005: Optimización de Imágenes
+# ADR 0005: Optimización de imágenes
 
-**Status**: Accepted
+- **Estado**: aceptada
+- **Fecha**: 2026-10-05
+- **Revisión**: 2026-10-06. Se agrega JPEG como respaldo de WebP porque Safari no codifica WebP desde canvas. Se quitan `heic2any` y `exifr`, que no hacen falta.
 
-**Date**: 2026-10-05
+## Contexto
 
-## Context
+HU-08 pide que la administradora suba su foto ya editada y que el sistema:
 
-HU-08 requiere:
-- Validación y corrección de orientación.
-- Generación de múltiples tamaños (thumb, medium, large).
-- Conversión a WebP.
-- Eliminación de metadatos (EXIF, GPS).
-- Soporte para HEIC (si usa iPhone).
-- Límite de tamaño razonable (ej. 10MB).
+- valide tipo y tamaño;
+- corrija la orientación;
+- genere varios tamaños en un formato eficiente;
+- elimine los metadatos, sobre todo la ubicación.
 
-Sharp (librería estándar) no corre en Workers. Procesar en servidor requeriría Durable Objects o un servicio externo.
+El principio III exige lo mismo, con validación en el servidor.
 
-## Decision
+En el Worker no corren `sharp` ni Pillow, y el límite de 10 ms de CPU (ADR 0002) impide procesar imágenes ahí. La transformación administrada de Cloudflare Images requiere dominio propio o plan de pago para este uso.
 
-- **Procesamiento**: en el navegador, previo a la subida.
-- **Librerías**: `canvas` nativa (Web API), `heic2any` para convertir HEIC a JPEG, `exifr` para leer (no guardar) metadatos.
-- **Validación servidor**: tipo (JPEG, PNG, WebP, HEIC), tamaño (<10MB), dimensiones mínimas (ej. 200×200).
-- **Flujo**:
-  1. Usuario elige foto.
-  2. Navigator.mediaDevices (o input file).
-  3. Leer EXIF con `exifr` (para rotar basado en orientación).
-  4. Convertir HEIC a JPEG con `heic2any` si aplica.
-  5. Dibujar en canvas a los 3 tamaños y exportar como WebP.
-  6. Subir original + 3 derivadas a R2.
-  7. Servidor valida que llegaron bien y actualiza BD.
+## Decisión
 
-## Rationale
+El procesamiento se hace **en el navegador de la administradora**. El servidor **valida y guarda**.
 
-- **Sin costo de compute en servidor**: canvas corre gratis en el navegador.
-- **Feedback inmediato**: el usuario ve el preview del WebP antes de subir.
-- **Menos datos móviles**: los datos se comprimen en el celular.
-- **Offline-ready**: si se quiere PWA, Canvas funciona sin conexión (aunque R2 requiere red).
+1. **Selección**: `<input type="file" accept="image/jpeg,image/png,image/webp">`, con opción de cámara. Al no listar HEIC, iOS [convierte automáticamente](https://developer.apple.com/forums/thread/727526) las fotos HEIC a JPEG al elegirlas.
+2. **Decodificación**: `createImageBitmap(file)`, que aplica la orientación EXIF.
+3. **Derivadas**: se dibuja en canvas en 3 anchos (de referencia: 400, 900 y 1600 px).
+4. **Codificación**: se intenta WebP. Si el navegador devuelve otro tipo, como en [Safari](https://caniuse.com/mdn-api_htmlcanvaselement_toblob_type_parameter_webp), se usa JPEG con calidad cercana a 0,8. Re-codificar en canvas elimina todo el EXIF, GPS incluido.
+5. **Original**: se sube el archivo tal cual, a la ruta privada de R2 (ADR 0004).
+6. **Servidor**: verifica sesión, tamaño (original ≤ 15 MB, derivadas ≤ 1 MB), tipo por bytes mágicos (no por extensión) y que estén las tres derivadas. Luego escribe en R2 y en D1.
 
-## Consequences
+## Consecuencias
 
-- Navegadores sin soporte Canvas: la función cae (error claro: "Tu navegador es muy antiguo").
-- HEIC en navegadores no Safari: requiere librería `heic2any`. Si falla, mostrar error.
-- La responsabilidad de calidad está en el navegador del usuario. Si el celular es muy antiguo, el Canvas será lento.
-- Hay que testear con el celular real de la administradora (constitución, Principio II).
+- La subida se aliviana: la administradora sube la original más unos cientos de KB, y la conversión cuesta segundos en su celular.
+- En iPhone las derivadas serán JPEG y no WebP, y pesarán algo más. Sigue cumpliendo la meta de cientos de KB por imagen de la grilla.
+- La calidad y el tiempo dependen del celular de la administradora. **Se prueba en su celular real** (principio II, definición de terminado).
+- Pruebas automatizadas: la elección de tamaños y formato y la validación en el servidor son lógica pura, testeable sin navegador. Un caso de prueba verifica que una foto con GPS no conserva metadatos en las derivadas.
+- Si se agrega edición automática en el futuro, se aplica sobre la original guardada.
 
-## Alternatives Considered
+## Alternativas consideradas
 
-1. **Procesar en servidor con Sharp en un Durable Object**: posible, pero agrega complejidad. Cuesta más (aunque sigue siendo gratuito en la capa free de Durable Objects, hay límites).
-2. **Servicio externo (Cloudinary, Imgix)**: gratuito pero limitado.
-3. **No procesar, solo validar tamaño**: no cumple HU-08 (optimización automática).
+1. **Procesar en el servidor**: no cabe en 10 ms de CPU, y las librerías habituales no corren en Workers.
+2. **Cloudflare Images (transformaciones)**: 5.000 transformaciones únicas al mes gratis, pero requiere dominio propio para transformar por URL. Se reevalúa si se compra dominio.
+3. **Codificador WebP en WASM (por ejemplo, jSquash)**: daría WebP también en Safari. Se descarta por ahora para no sumar dependencias; queda como mejora si el peso de los JPEG resulta un problema.
+4. **Solo validar, sin optimizar**: no cumple HU-08.
 
-## References
+## Referencias
 
-- Principio II: Rendimiento y Accesibilidad
-- HU-08: Optimización automática de la foto
-- Principio III: Privacidad (eliminar metadatos)
-- ADR 0002: Stack Tecnológico
-- ADR 0004: Almacenamiento de Imágenes
+- Constitución: principios II, III y V.
+- PRD Fase 1: HU-07, HU-08, HU-09.
+- ADR 0002, ADR 0004.
