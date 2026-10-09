@@ -1,0 +1,17 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "npm run preview",
+      "startServerReadyPattern": "localhost",
+      "url": ["http://localhost:4321/"],
+      "numberOfRuns": 3
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.9 }],
+        "categories:accessibility": ["warn", { "minScore": 0.9 }]
+      }
+    },
+    "upload": { "target": "filesystem", "outputDir": "lhci-reports" }
+  }
+}

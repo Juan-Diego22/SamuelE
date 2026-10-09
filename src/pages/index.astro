@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "../components/BrandHeader.astro";
+
+// SSR para poder medir el CPU real del Worker (D9).
+export const prerender = false;
+---
+
+<BaseLayout title="Samuelé Repostería">
+  <BrandHeader />
+  <p class="notice">Nuestro catálogo estará disponible muy pronto</p>
+</BaseLayout>

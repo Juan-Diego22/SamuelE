@@ -1,0 +1,8 @@
+dist/
+.astro/
+.wrangler/
+package-lock.json
+specs/
+docs/
+.specify/
+.claude/
