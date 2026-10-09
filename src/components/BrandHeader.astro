@@ -1,0 +1,24 @@
+---
+import { Image } from "astro:assets";
+import logo from "../assets/logo-samuele.jpg";
+
+interface Props {
+  /** Nivel del título: `h1` en el inicio; en el 404 se usa `p` para no duplicar el encabezado principal. */
+  tag?: "h1" | "p";
+}
+
+const { tag: Tag = "h1" } = Astro.props;
+---
+
+<header class="brand">
+  <Image
+    class="brand-logo"
+    src={logo}
+    format="webp"
+    width={160}
+    height={160}
+    alt="Logo de Samuelé Repostería"
+  />
+  <Tag class="brand-name">Samuelé Repostería</Tag>
+  <p class="brand-tagline">Creamos momentos dulces</p>
+</header>

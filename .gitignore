@@ -2,3 +2,9 @@
 .env.*
 .claude/
 *Zone.Identifier
+node_modules/
+dist/
+.astro/
+.wrangler/
+.dev.vars
+lhci-reports/

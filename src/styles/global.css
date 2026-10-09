@@ -1,0 +1,89 @@
+:root {
+  --chocolate: #3b1f14;
+  --rosa: #e85a9a;
+  --rosa-oscuro: #b8326e;
+  --rojo: #a8142f;
+  --dorado: #c9a24b;
+  --crema: #fff8f1;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--crema);
+  color: var(--chocolate);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+h1,
+h2 {
+  font-family: "Dancing Script", "Brush Script MT", cursive;
+  font-weight: 400;
+  color: var(--rosa-oscuro);
+  margin: 0 0 0.5rem;
+}
+
+main {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+
+.brand {
+  margin-bottom: 1.5rem;
+}
+
+.brand-logo {
+  display: block;
+  margin: 0 auto 1rem;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--dorado);
+}
+
+.brand-name {
+  /* Respaldo antes de clamp() para navegadores antiguos */
+  font-size: 2.25rem;
+  font-size: clamp(2.25rem, 8vw, 3.5rem);
+  line-height: 1.2;
+}
+
+.brand-tagline {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--chocolate);
+}
+
+.notice {
+  margin: 0;
+  padding: 1rem;
+  border: 2px solid var(--dorado);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.link-home {
+  display: inline-block;
+  margin-top: 1rem;
+  color: var(--rojo);
+  font-weight: 600;
+}
