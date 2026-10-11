@@ -84,6 +84,7 @@ Decisiones **heredadas y no reabiertas**: ADR 0002 (Astro + adaptador de Cloudfl
 - **Decisión**: con `observability.enabled` activo, tras el primer despliegue se generan unas 50–100 visitas a la página (`curl` en bucle) y se lee la gráfica "CPU time per execution" del panel de Cloudflare (Workers → el Worker → Metrics), que muestra percentiles P50, P90, P99 y P999. Alternativa reproducible: la API GraphQL de analítica de Workers.
 - **Criterio propuesto** (ajustable): P99 ≤ 10 ms (límite del plan gratuito) y P50 ≤ 3 ms. El resultado se anota en el PR y, si hay riesgo, en una actualización del ADR 0002.
 - **A confirmar al implementar**: la documentación consultada no dice si la gráfica de CPU está disponible en el plan gratuito. Si no lo está, usar la API GraphQL o `wrangler tail`.
+- **Estado (2026-10-11): no verificado; riesgo aceptado** por el responsable del proyecto. No se midieron P50 ni P99; el único dato disponible (219,83 ms acumulados en 37 solicitudes entre el 1 y el 11 de octubre, tarjeta de Usage de la cuenta) no es consumo por ejecución. **Se reevalúa** al especificar la funcionalidad 004 (catálogo), antes de leer la base de datos en el Worker. Mitigaciones: `prerender = true` en páginas públicas, optimizar o valorar Workers Paid.
 
 ### D14. Protección de `main` (resuelto)
 

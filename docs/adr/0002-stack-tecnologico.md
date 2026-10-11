@@ -40,6 +40,7 @@ Consultado el 2026-10-06.
 
 - Un solo proyecto, un solo despliegue y un solo dominio: sin CORS, y la cookie de sesión funciona sin configuración extra.
 - **Riesgo de CPU**: 10 ms por request alcanza para renderizar páginas simples y consultar D1 (la espera de red no cuenta como CPU). Se mide en el Hito 1 con el esqueleto desplegado. Si se excede, se reduce el trabajo por request antes de considerar un plan de pago.
+  - **Estado (2026-10-11): no verificado; riesgo aceptado.** No se midió el CPU por ejecución del esqueleto (P99 ≤ 10 ms y P50 ≤ 3 ms sin comprobar). Se reevalúa al especificar la funcionalidad 004 (catálogo), antes de leer D1 en el Worker; mitigaciones: `prerender = true` en páginas públicas, optimizar o Workers Paid.
 - Hay que aprender Workers, D1 y R2. Las pruebas locales usan `wrangler dev`, que emula D1 y R2.
 - Cloudflare [recomienda](https://developers.cloudflare.com/workers/configuration/routing/workers-dev/) dominio propio para producción y describe `workers.dev` como "para proyectos personales o hobby que no son críticos". Se acepta para la Fase 1. Migrar a un dominio es configuración, no código.
 - **Salida si el proyecto crece**: Workers Paid (USD 5/mes) eleva los límites sin cambiar código.
