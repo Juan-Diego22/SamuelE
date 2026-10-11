@@ -11,7 +11,7 @@ describe("página de inicio", () => {
   it("muestra nombre, lema y mensaje de catálogo próximo", async () => {
     const html = await renderHome();
     expect(html).toContain("Samuelé Repostería");
-    expect(html).toContain("Creamos momentos dulces");
+    expect(html).toContain("Lema roto a proposito");
     expect(html).toMatch(/catálogo/);
     expect(html).toMatch(/pronto/);
   });
