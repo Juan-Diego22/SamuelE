@@ -4,7 +4,7 @@ import astro from "eslint-plugin-astro";
 import globals from "globals";
 
 export default [
-  { ignores: ["dist/", ".astro/", ".wrangler/"] },
+  { ignores: ["dist/", ".astro/", ".wrangler/", "worker-configuration.d.ts"] },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   ...astro.configs.recommended,

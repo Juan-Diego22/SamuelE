@@ -4,4 +4,13 @@
   "compatibility_date": "2026-10-08",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "observability": { "enabled": true },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "samuele-reposteria",
+      // Reemplazar por el id real tras `wrangler d1 create samuele-reposteria` (no es secreto).
+      "database_id": "local-placeholder",
+      "migrations_dir": "migrations",
+    },
+  ],
 }

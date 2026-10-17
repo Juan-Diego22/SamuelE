@@ -15,7 +15,7 @@ cp .dev.vars.example .dev.vars        # editar ADMIN_EMAIL y ADMIN_PASSWORD
 npx wrangler d1 migrations apply DB --local
 ```
 
-Esperado: la migración `0001_sessions_and_login_attempts` aplicada. Confirmar las tablas:
+Esperado: la migración `0000_sessions_and_login_attempts` aplicada. Confirmar las tablas:
 
 ```bash
 npx wrangler d1 execute DB --local --command "SELECT name FROM sqlite_master WHERE type='table'"

@@ -16,6 +16,38 @@ npm run build && npm run preview   # igual que producción
 
 Para probar en un celular real en la misma red: `npm run dev -- --host` y abrir `http://<IP-de-la-computadora>:4321`.
 
+## Panel de la administradora
+
+El panel vive en `/admin` y exige iniciar sesión en `/admin/login` (ADR 0006). La credencial es un secreto del Worker, no está en el repositorio ni en la base.
+
+**Configuración local**
+
+```bash
+cp .dev.vars.example .dev.vars               # editar ADMIN_EMAIL y ADMIN_PASSWORD (ignorado por git)
+npx wrangler d1 migrations apply DB --local  # crea las tablas sessions y login_attempts
+```
+
+**Configuración en producción (una sola vez)**
+
+```bash
+npx wrangler d1 create samuele-reposteria    # copiar el database_id a wrangler.jsonc
+npx wrangler secret put ADMIN_EMAIL
+npx wrangler secret put ADMIN_PASSWORD       # aleatoria, de al menos 20 caracteres
+```
+
+El token de Cloudflare del repositorio necesita el permiso **D1: Edit**: `deploy.yml` aplica las migraciones antes de publicar.
+
+**Invalidar todas las sesiones** (cambio de credencial o celular perdido):
+
+```bash
+npx wrangler secret put ADMIN_PASSWORD
+npx wrangler d1 execute DB --remote --command "DELETE FROM sessions"
+```
+
+Tras 5 intentos fallidos en 15 minutos el acceso se bloquea 15 minutos. Para levantar el bloqueo antes: `npx wrangler d1 execute DB --remote --command "DELETE FROM login_attempts"`.
+
+Si cambias `wrangler.jsonc`, regenera los tipos con `npx wrangler types`.
+
 ## Verificaciones
 
 ```bash
@@ -30,7 +62,11 @@ npm test               # Vitest
 ```text
 src/layouts/      # BaseLayout: html, meta viewport, fuentes y estilos globales
 src/components/   # BrandHeader: logo, nombre y lema
-src/pages/        # index.astro (inicio) y 404.astro
+src/pages/        # index.astro (inicio), 404.astro, admin/ (login y panel) y api/admin/ (logout)
+src/lib/auth/     # autenticación: credenciales, sesiones, bloqueo, Origin y almacén D1
+src/db/           # schema.ts (Drizzle): sessions y login_attempts
+src/middleware.ts # protege /admin/* y /api/admin/*
+migrations/       # SQL de D1 generado con drizzle-kit
 src/styles/       # global.css: variables de color y tipografía
 tests/            # pruebas con Vitest
 .github/workflows/  # ci.yml y deploy.yml
@@ -53,4 +89,5 @@ Al fusionar en `main`, `deploy.yml` vuelve a validar, construye y publica con `w
 ## Documentación
 
 - Decisiones: [docs/adr/](docs/adr/), incluido el [ADR 0008](docs/adr/0008-herramientas-de-desarrollo.md) de herramientas.
+- Guía del inicio de sesión: [specs/002-admin-login/quickstart.md](specs/002-admin-login/quickstart.md).
 - Guía de la funcionalidad: [specs/001-project-skeleton/quickstart.md](specs/001-project-skeleton/quickstart.md).

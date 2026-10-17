@@ -1,0 +1,16 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export const prerender = false;
+---
+
+<BaseLayout title="Panel de trabajos | Samuelé Repostería">
+  <div class="admin-bar">
+    <h1>Panel de trabajos</h1>
+    <form method="post" action="/api/admin/logout">
+      <button type="submit" class="btn-primary">
+        Salir
+      </button>
+    </form>
+  </div>
+</BaseLayout>

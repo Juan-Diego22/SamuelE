@@ -1,0 +1,45 @@
+---
+import { env } from "cloudflare:workers";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BrandHeader from "../../components/BrandHeader.astro";
+import LoginForm from "../../components/LoginForm.astro";
+import { attemptLogin } from "../../lib/auth/login";
+import { describeFailure } from "../../lib/auth/messages";
+import { sessionCookie } from "../../lib/auth/cookie";
+import { createD1Store } from "../../lib/auth/store";
+
+export const prerender = false;
+
+let error: string | undefined;
+
+if (Astro.request.method === "POST") {
+  const form = await Astro.request.formData();
+  const result = await attemptLogin({
+    store: createD1Store(env.DB),
+    env,
+    email: String(form.get("email") ?? ""),
+    password: String(form.get("password") ?? ""),
+    now: Date.now(),
+    log: (message) => console.warn(message),
+  });
+
+  if (result.status === "ok") {
+    return new Response(null, {
+      status: 303,
+      headers: {
+        Location: "/admin",
+        "Set-Cookie": sessionCookie(result.token, import.meta.env.PROD),
+      },
+    });
+  }
+  const failure = describeFailure(result.status);
+  error = failure.message;
+  Astro.response.status = failure.httpStatus;
+}
+---
+
+<BaseLayout title="Panel de trabajos | Samuelé Repostería">
+  <BrandHeader />
+  <h2>Panel de trabajos</h2>
+  <LoginForm error={error} />
+</BaseLayout>

@@ -63,7 +63,7 @@ specs/002-admin-login/
 
 ```text
 migrations/
-└── 0001_sessions_and_login_attempts.sql   # generada con drizzle-kit, aplicada con wrangler
+└── 0000_sessions_and_login_attempts.sql   # generada con drizzle-kit, aplicada con wrangler
 drizzle.config.ts
 src/
 ├── db/

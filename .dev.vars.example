@@ -1,0 +1,3 @@
+# Copiar a .dev.vars (ignorado por git) y cambiar los valores.
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=cambia-esta-contrasena-por-una-aleatoria-de-20-o-mas-caracteres

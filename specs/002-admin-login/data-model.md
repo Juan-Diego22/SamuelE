@@ -1,6 +1,6 @@
 # Modelo de datos: Inicio de sesión de la administradora
 
-Base: Cloudflare D1 (SQLite), binding `DB`. Esquema en `src/db/schema.ts` (Drizzle); migración `migrations/0001_sessions_and_login_attempts.sql`. No hay tabla de usuarios ni de contraseñas (FR-017, ADR 0006).
+Base: Cloudflare D1 (SQLite), binding `DB`. Esquema en `src/db/schema.ts` (Drizzle); migración `migrations/0000_sessions_and_login_attempts.sql`. No hay tabla de usuarios ni de contraseñas (FR-017, ADR 0006).
 
 ## `sessions` — sesión activa de un dispositivo
 
