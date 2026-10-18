@@ -1,25 +1,17 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "samuele-reposteria",
-	"compatibility_date": "2026-10-08",
-	"compatibility_flags": [
-		"nodejs_compat",
-		"global_fetch_strictly_public"
-	],
-	"observability": {
-		"enabled": true
-	},
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "samuele-reposteria",
-			"database_id": "daa93034-3f7d-45d8-9151-f6efb0607763",
-			"migrations_dir": "migrations",
-		},
-		{
-			"binding": "samuele_reposteria",
-			"database_name": "samuele-reposteria",
-			"database_id": "daa93034-3f7d-45d8-9151-f6efb0607763"
-		},
-	],
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "samuele-reposteria",
+  "compatibility_date": "2026-10-08",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "observability": {
+    "enabled": true,
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "samuele-reposteria",
+      "database_id": "daa93034-3f7d-45d8-9151-f6efb0607763",
+      "migrations_dir": "migrations",
+    },
+  ],
 }
