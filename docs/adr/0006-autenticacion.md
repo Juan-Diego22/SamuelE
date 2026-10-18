@@ -38,7 +38,7 @@ Un hash de contraseñas adecuado (bcrypt, o PBKDF2 con las iteraciones recomenda
 - Comodines `src/pages/admin/[...rest].astro` y `src/pages/api/admin/[...rest].ts`: sin ellos Astro responde 404 estático a rutas inexistentes sin ejecutar el middleware y no se protegerían.
 - Tablas `sessions` y `login_attempts` en la migración `migrations/0000_sessions_and_login_attempts.sql` (numeración de drizzle-kit).
 - Desviación aceptada: con JavaScript desactivado, un doble envío del formulario puede contar como dos fallos (el script que deshabilita el botón lo evita en el celular).
-- Medición de CPU tras el despliegue (SC-009): pendiente.
+- Medición de CPU en producción (SC-009, 2026-10-18, registros de Workers Logs): login correcto `POST /admin/login` → 7 ms de CPU (206 ms de reloj, casi todo espera de D1); `POST /api/admin/logout`, que incluye la verificación de sesión → 2 ms; `GET /admin/login` → 2 ms. Todo ≤10 ms. Es una sola muestra de login y el margen es de 3 ms: si se supera con más tráfico o más funciones, aplicar la mitigación de research R2 (consulta SQL directa en la verificación de sesión). Costo $0: plan gratuito de Workers (61 de 100.000 peticiones diarias) y D1 sin cargo.
 
 ## Consecuencias
 
