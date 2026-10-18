@@ -32,6 +32,14 @@ Un hash de contraseñas adecuado (bcrypt, o PBKDF2 con las iteraciones recomenda
 - **CSRF**: además de `SameSite=Lax`, toda petición que modifica datos verifica que el encabezado `Origin` coincida con el sitio.
 - **Cambio o recuperación**: el desarrollador actualiza el secreto con `wrangler secret put` y borra las sesiones. Es suficiente para un único usuario.
 
+## Implementación (funcionalidad 002)
+
+- Cookie `__Host-session` (en `astro dev` sobre http, `session` sin `Secure`); lógica en `src/lib/auth/`, middleware en `src/middleware.ts` con la regla en `guard.ts`.
+- Comodines `src/pages/admin/[...rest].astro` y `src/pages/api/admin/[...rest].ts`: sin ellos Astro responde 404 estático a rutas inexistentes sin ejecutar el middleware y no se protegerían.
+- Tablas `sessions` y `login_attempts` en la migración `migrations/0000_sessions_and_login_attempts.sql` (numeración de drizzle-kit).
+- Desviación aceptada: con JavaScript desactivado, un doble envío del formulario puede contar como dos fallos (el script que deshabilita el botón lo evita en el celular).
+- Medición de CPU tras el despliegue (SC-009): pendiente.
+
 ## Consecuencias
 
 - Todo cabe en el plan gratuito: SHA-256 y la consulta a D1 cuestan muy poca CPU.

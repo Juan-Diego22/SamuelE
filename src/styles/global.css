@@ -87,3 +87,68 @@ main {
   color: var(--rojo);
   font-weight: 600;
 }
+
+/* Inicio de sesión (FR-015): campos y botón ≥48 px, foco visible, sin desborde desde 320 px */
+.login-form {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 24rem;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.login-form label {
+  font-weight: 600;
+}
+
+.login-form input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--chocolate);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--chocolate);
+  font: inherit;
+}
+
+.login-form input:focus-visible,
+.btn-primary:focus-visible {
+  outline: 3px solid var(--rosa-oscuro);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  min-height: 48px;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  border: 0;
+  border-radius: 12px;
+  background: var(--rojo);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.form-error {
+  margin: 0.25rem 0 0;
+  padding: 0.75rem;
+  border: 2px solid var(--rojo);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--rojo);
+  font-weight: 600;
+}
+
+.admin-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}

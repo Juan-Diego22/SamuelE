@@ -8,3 +8,4 @@ dist/
 .wrangler/
 .dev.vars
 lhci-reports/
+.lighthouseci/

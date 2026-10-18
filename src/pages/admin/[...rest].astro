@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BrandHeader from "../../components/BrandHeader.astro";
+
+// Comodín: sin él Astro responde 404 estático a rutas inexistentes sin pasar por el
+// middleware, y la protección de FR-005 no se aplicaría (research D1, riesgo R1).
+// Con sesión muestra el mismo 404 del sitio; sin sesión el middleware ya redirigió.
+export const prerender = false;
+
+Astro.response.status = 404;
+---
+
+<BaseLayout title="Página no encontrada | Samuelé Repostería">
+  <BrandHeader tag="p" />
+  <h1>No encontramos esta página</h1>
+  <a class="link-home" href="/">
+    Volver al inicio
+  </a>
+</BaseLayout>

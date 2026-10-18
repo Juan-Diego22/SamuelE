@@ -6,3 +6,5 @@ specs/
 docs/
 .specify/
 .claude/
+worker-configuration.d.ts
+migrations/meta/
