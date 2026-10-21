@@ -1,0 +1,41 @@
+---
+import PanelHeader from "./PanelHeader.astro";
+import WorkCard from "./WorkCard.astro";
+import type { PanelItem } from "../lib/works/list";
+
+interface Props {
+  /** Trabajos ya ordenados; `undefined` si no se pudieron cargar. */
+  items?: PanelItem[];
+  /** Mensaje de error ya resuelto cuando falló la carga. */
+  error?: string;
+  /** Muestra el aviso de que se acaba de publicar un trabajo. */
+  published?: boolean;
+}
+
+const { items, error, published = false } = Astro.props;
+---
+
+<PanelHeader title="Mis trabajos" />
+<a class="btn-primary btn-block" href="/admin/works/new">
+  + Nuevo trabajo
+</a>
+{published && (
+  <p class="form-success" role="status">
+    Trabajo publicado.
+  </p>
+)}
+{error ? (
+  <p class="form-error" role="alert">
+    {error}
+  </p>
+) : items && items.length > 0 ? (
+  <ul class="work-list">
+    {items.map((item) => (
+      <WorkCard item={item} />
+    ))}
+  </ul>
+) : (
+  <p class="notice empty-state">
+    Todavía no tienes trabajos. Publica el primero.
+  </p>
+)}
