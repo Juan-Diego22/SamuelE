@@ -14,4 +14,12 @@
       "migrations_dir": "migrations",
     },
   ],
+  // El bucket se crea una sola vez en la cuenta de Cloudflare (ADR 0004); el despliegue
+  // falla si `samuele-media` no existe.
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "samuele-media",
+    },
+  ],
 }

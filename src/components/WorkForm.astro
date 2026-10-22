@@ -1,0 +1,119 @@
+---
+import type { Category } from "../lib/works/store";
+import { MAX_DESCRIPTION_LENGTH, MAX_TITLE_LENGTH } from "../lib/works/limits";
+
+interface Props {
+  categories: Category[];
+}
+
+const { categories } = Astro.props;
+---
+
+<noscript>
+  <p class="form-error">Necesitas activar JavaScript para publicar fotos.</p>
+</noscript>
+<form id="work-form" class="work-form" novalidate>
+  <div class="field">
+    <label for="photo">Foto</label>
+    <div class="photo-upload">
+      <input
+        id="photo"
+        name="photo"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        required
+        aria-describedby="error-photo"
+      />
+      <img
+        id="photo-preview"
+        class="photo-preview"
+        alt="Vista previa de la foto elegida"
+        hidden
+      />
+    </div>
+    <p
+      id="error-photo"
+      class="form-error"
+      role="alert"
+      data-error-for="photo"
+      hidden
+    ></p>
+  </div>
+
+  <div class="field">
+    <label for="category">Categoría</label>
+    <select
+      id="category"
+      name="category"
+      required
+      aria-describedby="error-category"
+    >
+      <option value="">Elige una categoría</option>
+      {categories.map((c) => (
+        <option value={String(c.id)}>{c.name}</option>
+      ))}
+    </select>
+    <p
+      id="error-category"
+      class="form-error"
+      role="alert"
+      data-error-for="category"
+      hidden
+    ></p>
+  </div>
+
+  <div class="field">
+    <label for="title">Título (opcional)</label>
+    <input
+      id="title"
+      name="title"
+      type="text"
+      maxlength={MAX_TITLE_LENGTH}
+      aria-describedby="error-title"
+    />
+    <p
+      id="error-title"
+      class="form-error"
+      role="alert"
+      data-error-for="title"
+      hidden
+    ></p>
+  </div>
+
+  <div class="field">
+    <label for="description">Descripción (opcional)</label>
+    <textarea
+      id="description"
+      name="description"
+      rows="4"
+      maxlength={MAX_DESCRIPTION_LENGTH}
+      aria-describedby="error-description"
+    ></textarea>
+    <p
+      id="error-description"
+      class="form-error"
+      role="alert"
+      data-error-for="description"
+      hidden
+    ></p>
+  </div>
+
+  <p
+    id="error-form"
+    class="form-error"
+    role="alert"
+    data-error-for="form"
+    hidden
+  ></p>
+
+  <button type="submit" class="btn-primary">
+    Publicar
+  </button>
+  <a class="btn-secondary" href="/admin">
+    Cancelar
+  </a>
+</form>
+
+<script>
+  import "../scripts/work-form";
+</script>

@@ -1,0 +1,24 @@
+---
+import { env } from "cloudflare:workers";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import NewWorkView from "../../../components/NewWorkView.astro";
+import { MESSAGES } from "../../../lib/works/messages";
+import { createD1WorksStore } from "../../../lib/works/store";
+import type { Category } from "../../../lib/works/store";
+
+export const prerender = false;
+
+let categories: Category[] | undefined;
+let error: string | undefined;
+try {
+  categories = await createD1WorksStore(env.DB).listCategories();
+} catch (cause) {
+  console.error(`No se pudieron leer las categorías: ${String(cause)}`);
+  error = MESSAGES.formUnavailable;
+  Astro.response.status = 503;
+}
+---
+
+<BaseLayout title="Nuevo trabajo | Samuelé Repostería">
+  <NewWorkView categories={categories} error={error} />
+</BaseLayout>

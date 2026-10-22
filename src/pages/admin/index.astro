@@ -1,16 +1,27 @@
 ---
+import { env } from "cloudflare:workers";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import WorksPanel from "../../components/WorksPanel.astro";
+import { toPanelItems } from "../../lib/works/list";
+import type { PanelItem } from "../../lib/works/list";
+import { LIST_LIMIT } from "../../lib/works/limits";
+import { MESSAGES } from "../../lib/works/messages";
+import { createD1WorksStore } from "../../lib/works/store";
 
 export const prerender = false;
+
+let items: PanelItem[] | undefined;
+let error: string | undefined;
+try {
+  items = toPanelItems(await createD1WorksStore(env.DB).listWorks(LIST_LIMIT));
+} catch (cause) {
+  console.error(`No se pudo cargar la lista de trabajos: ${String(cause)}`);
+  error = MESSAGES.listFailed;
+  Astro.response.status = 503;
+}
+const published = Astro.url.searchParams.get("publicado") === "1";
 ---
 
 <BaseLayout title="Panel de trabajos | Samuelé Repostería">
-  <div class="admin-bar">
-    <h1>Panel de trabajos</h1>
-    <form method="post" action="/api/admin/logout">
-      <button type="submit" class="btn-primary">
-        Salir
-      </button>
-    </form>
-  </div>
+  <WorksPanel items={items} error={error} published={published} />
 </BaseLayout>

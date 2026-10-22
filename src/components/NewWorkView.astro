@@ -1,0 +1,28 @@
+---
+import PanelHeader from "./PanelHeader.astro";
+import WorkForm from "./WorkForm.astro";
+import type { Category } from "../lib/works/store";
+
+interface Props {
+  /** `undefined` si no se pudieron leer las categorías. */
+  categories?: Category[];
+  /** Mensaje de error ya resuelto cuando falló la carga. */
+  error?: string;
+}
+
+const { categories, error } = Astro.props;
+---
+
+<PanelHeader title="Nuevo trabajo" />
+{error || !categories ? (
+  <>
+    <p class="form-error" role="alert">
+      {error}
+    </p>
+    <a class="link-home" href="/admin">
+      Volver a Mis trabajos
+    </a>
+  </>
+) : (
+  <WorkForm categories={categories} />
+)}

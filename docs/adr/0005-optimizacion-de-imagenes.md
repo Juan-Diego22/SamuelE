@@ -26,10 +26,11 @@ El procesamiento se hace **en el navegador de la administradora**. El servidor *
 3. **Derivadas**: se dibuja en canvas en 3 anchos (de referencia: 400, 900 y 1600 px).
 4. **Codificación**: se intenta WebP. Si el navegador devuelve otro tipo, como en [Safari](https://caniuse.com/mdn-api_htmlcanvaselement_toblob_type_parameter_webp), se usa JPEG con calidad cercana a 0,8. Re-codificar en canvas elimina todo el EXIF, GPS incluido.
 5. **Original**: se sube el archivo tal cual, a la ruta privada de R2 (ADR 0004).
-6. **Servidor**: verifica sesión, tamaño (original ≤ 15 MB, derivadas ≤ 1 MB), tipo por bytes mágicos (no por extensión) y que estén las tres derivadas. Luego escribe en R2 y en D1.
+6. **Servidor**: verifica sesión, tamaño (original ≤ 15 MB, derivadas ≤ 1 MB), tipo por bytes mágicos (no por extensión), que estén las tres derivadas y que **no lleven metadatos** (rechaza JPEG con segmentos APP1/APP13 y WebP con bloques `EXIF` o `XMP `; verificación añadida el 2026-10-19 en la funcionalidad 003). Luego escribe en R2 y en D1.
 
 ## Consecuencias
 
+- HEIC no se lista en el selector y, si llegara sin convertir, el servidor lo rechaza por bytes con el mensaje "Esa foto no tiene un formato admitido. Usa JPEG, PNG o WebP." (aclarado el 2026-10-19).
 - La subida se aliviana: la administradora sube la original más unos cientos de KB, y la conversión cuesta segundos en su celular.
 - En iPhone las derivadas serán JPEG y no WebP, y pesarán algo más. Sigue cumpliendo la meta de cientos de KB por imagen de la grilla.
 - La calidad y el tiempo dependen del celular de la administradora. **Se prueba en su celular real** (principio II, definición de terminado).

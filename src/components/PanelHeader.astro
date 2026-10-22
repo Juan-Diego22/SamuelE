@@ -1,0 +1,28 @@
+---
+import { Image } from "astro:assets";
+import logo from "../assets/logo-samuele.jpg";
+
+interface Props {
+  /** Título visible del panel (el único `h1` de la pantalla). */
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<header class="panel-header">
+  <Image
+    class="panel-logo"
+    src={logo}
+    format="webp"
+    width={48}
+    height={48}
+    alt="Logo de Samuelé Repostería"
+  />
+  <h1>{title}</h1>
+  <form method="post" action="/api/admin/logout">
+    <button type="submit" class="btn-link">
+      Salir
+    </button>
+  </form>
+</header>

@@ -1,0 +1,24 @@
+---
+import type { PanelItem } from "../lib/works/list";
+
+interface Props {
+  item: PanelItem;
+}
+
+const { item } = Astro.props;
+---
+
+<li class="work-card-admin">
+  <img
+    class="work-thumb"
+    src={item.thumbnailUrl}
+    alt={`Foto de ${item.title}`}
+    width="88"
+    height="88"
+    loading="lazy"
+  />
+  <div class="work-info">
+    <p class="work-title">{item.title}</p>
+    <p class="work-category">{item.category}</p>
+  </div>
+</li>

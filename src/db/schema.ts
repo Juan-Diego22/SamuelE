@@ -20,3 +20,35 @@ export const loginAttempts = sqliteTable(
   },
   (table) => [index("login_attempts_attempted_at_idx").on(table.attemptedAt)],
 );
+
+/** Agrupación fija de trabajos; las cuatro filas se insertan en la migración. */
+export const categories = sqliteTable("categories", {
+  id: integer("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  position: integer("position").notNull(),
+});
+
+/** Un trabajo publicado. `id` es un UUID generado por el navegador (hace idempotente el reintento). */
+export const works = sqliteTable(
+  "works",
+  {
+    id: text("id").primaryKey(),
+    categoryId: integer("category_id")
+      .notNull()
+      .references(() => categories.id),
+    /** ≤80 caracteres; nulo si queda vacío. */
+    title: text("title"),
+    /** ≤1000 caracteres; nulo si queda vacío. */
+    description: text("description"),
+    /** Cambiará al reemplazar la foto (HU-09). */
+    photoVersion: integer("photo_version").notNull(),
+    /** `webp` o `jpg`; igual para las tres derivadas. */
+    photoExt: text("photo_ext").notNull(),
+    /** Milisegundos desde 1970 (UTC). */
+    createdAt: integer("created_at").notNull(),
+  },
+  (table) => [
+    index("works_created_at_idx").on(table.createdAt),
+    index("works_category_id_idx").on(table.categoryId),
+  ],
+);
