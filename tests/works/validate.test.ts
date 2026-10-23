@@ -5,22 +5,32 @@ import { validateFields } from "../../src/lib/works/validate";
 
 const ID = "3f2b8c1e-7a4d-4e0b-9c55-0a1b2c3d4e5f";
 const store = createMemoryWorksStore();
-const base = { id: ID, category: "1", title: "", description: "" };
+const base = { id: ID, category: "1", title: "Torta", description: "" };
 
 describe("validateFields", () => {
-  it("acepta solo id y categoría; título y descripción quedan nulos", async () => {
+  it("acepta id, categoría y título; la descripción queda nula", async () => {
     expect(await validateFields(base, store)).toEqual({
       ok: true,
       value: {
         id: ID,
         categoryId: 1,
-        title: null,
+        title: "Torta",
         description: null,
       },
     });
   });
 
-  it("recorta título y descripción y nulifica los vacíos", async () => {
+  it("exige un título: vacío o solo espacios", async () => {
+    for (const title of ["", "   "]) {
+      expect(await validateFields({ ...base, title }, store)).toEqual({
+        ok: false,
+        field: "title",
+        message: "Escribe un título.",
+      });
+    }
+  });
+
+  it("recorta título y descripción y nulifica la descripción vacía", async () => {
     const r = await validateFields(
       { ...base, title: "  Torta  ", description: "   " },
       store,

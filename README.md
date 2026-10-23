@@ -50,7 +50,7 @@ Si cambias `wrangler.jsonc`, regenera los tipos con `npx wrangler types`.
 
 ## Trabajos y fotos
 
-`/admin` lista "Mis trabajos" y `/admin/works/new` publica uno (foto, categoría, título y descripción opcionales). La foto se optimiza en el navegador (ADR 0005) y `POST /api/admin/works` la valida y la guarda: originales privadas y derivadas públicas en R2 (binding `MEDIA`, bucket `samuele-media`), datos en D1 (tablas `categories` y `works`). Las derivadas se sirven en `GET /media/works/...`.
+`/admin` lista "Mis trabajos" (cada tarjeta con "Editar" y "Retirar"), `/admin/works/new` publica uno (foto, categoría y título obligatorios; descripción opcional) y `/admin/works/{id}/edit` lo edita (también reemplaza la foto). Retirar es un borrado lógico (`retired_at`, migración `0002`): el trabajo deja de verse, pero sus archivos no se borran. La foto se optimiza en el navegador (ADR 0005) y `POST /api/admin/works` la valida y la guarda: originales privadas y derivadas públicas en R2 (binding `MEDIA`, bucket `samuele-media`), datos en D1 (tablas `categories` y `works`). Las derivadas se sirven en `GET /media/works/...`. Rutas de API: `POST /api/admin/works` (crear), `PUT /api/admin/works/{id}` (editar) y `POST /api/admin/works/{id}/retire` (retirar).
 
 **Probar en local**: `npx wrangler d1 migrations apply DB --local` (crea las tablas y las 4 categorías) y `npm run dev`; R2 usa un bucket simulado local. Pasos completos en [quickstart.md](specs/003-panel-nuevo-trabajo/quickstart.md).
 
@@ -74,7 +74,7 @@ npm test               # Vitest
 ```text
 src/layouts/      # BaseLayout: html, meta viewport, fuentes y estilos globales
 src/components/   # BrandHeader, PanelHeader, WorksPanel, WorkCard, WorkForm y NewWorkView
-src/pages/        # index.astro (inicio), 404.astro, admin/ (login, lista y nuevo trabajo), api/admin/ (logout y works) y media/
+src/pages/        # index.astro (inicio), 404.astro, admin/ (login, lista, nuevo y editar trabajo), api/admin/ (logout, works, works/{id} y works/{id}/retire) y media/
 src/lib/auth/     # autenticación: credenciales, sesiones, bloqueo, Origin y almacén D1
 src/lib/works/    # trabajos: validación, bytes de imagen, claves R2, caso de uso y almacenes
 src/lib/photo/    # optimización de la foto en el navegador

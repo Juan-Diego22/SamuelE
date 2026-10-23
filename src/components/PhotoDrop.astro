@@ -1,0 +1,38 @@
+---
+import CameraIcon from "./CameraIcon.astro";
+
+interface Props {
+  /** Foto actual al editar: la vista previa empieza mostrándola. */
+  currentPhotoUrl?: string;
+}
+
+const { currentPhotoUrl } = Astro.props;
+---
+
+<label
+  for="photo"
+  class:list={["photo-drop", { "has-photo": currentPhotoUrl }]}
+>
+  <input
+    id="photo"
+    class="photo-drop-input"
+    name="photo"
+    type="file"
+    accept="image/jpeg,image/png,image/webp"
+    required={!currentPhotoUrl}
+    aria-describedby="error-photo"
+  />
+  <span class="photo-drop-empty">
+    <CameraIcon />
+    <span class="photo-drop-text">Toca para subir foto</span>
+    <span class="photo-drop-hint">Galería o cámara</span>
+  </span>
+  <img
+    id="photo-preview"
+    class="photo-preview"
+    src={currentPhotoUrl}
+    alt="Vista previa de la foto elegida"
+    hidden={!currentPhotoUrl}
+  />
+  <span class="photo-drop-change">Cambiar foto</span>
+</label>

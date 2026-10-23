@@ -17,12 +17,20 @@ function newId(): string {
 if (form) {
   const photoInput = form.querySelector<HTMLInputElement>("#photo")!;
   const preview = form.querySelector<HTMLImageElement>("#photo-preview")!;
+  const drop = form.querySelector<HTMLElement>(".photo-drop")!;
   const category = document.getElementById(
     "category",
   ) as unknown as HTMLSelectElement;
   const title = form.querySelector<HTMLInputElement>("#title")!;
   const description = form.querySelector<HTMLTextAreaElement>("#description")!;
   const button = form.querySelector<HTMLButtonElement>("button[type=submit]")!;
+
+  // En edición el trabajo ya existe: su `id` va en la ruta y la foto es opcional.
+  const editing = form.dataset.mode === "edit";
+  const editId = form.dataset.workId ?? "";
+  const baseVersion = form.dataset.photoVersion ?? "";
+  // Vista previa inicial (foto actual al editar) a la que se vuelve si se cancela el selector.
+  const initialPreview = editing ? preview.getAttribute("src") : null;
 
   // El mismo `id` en cada reintento hace idempotente el envío (FR-016); cambia si cambia la foto.
   let workId = newId();
@@ -49,22 +57,34 @@ if (form) {
 
   function setBusy(busy: boolean) {
     button.disabled = busy;
-    button.textContent = busy ? "Publicando…" : "Publicar";
+    button.textContent = busy
+      ? editing
+        ? "Guardando…"
+        : "Publicando…"
+      : editing
+        ? "Guardar"
+        : "Publicar";
     form!.setAttribute("aria-busy", String(busy));
   }
 
-  photoInput.addEventListener("change", () => {
-    const file = photoInput.files?.[0];
-    if (preview.src) URL.revokeObjectURL(preview.src);
-    optimized = null;
-    workId = newId();
-    if (file) {
-      preview.src = URL.createObjectURL(file);
+  function showPreview(src: string | null) {
+    if (src) {
+      preview.src = src;
       preview.hidden = false;
     } else {
       preview.removeAttribute("src");
       preview.hidden = true;
     }
+    drop.classList.toggle("has-photo", src !== null);
+  }
+
+  photoInput.addEventListener("change", () => {
+    const file = photoInput.files?.[0];
+    if (preview.src.startsWith("blob:")) URL.revokeObjectURL(preview.src);
+    optimized = null;
+    // El `id` nuevo por foto elegida solo aplica a "Nuevo".
+    if (!editing) workId = newId();
+    showPreview(file ? URL.createObjectURL(file) : initialPreview);
   });
 
   form.addEventListener("submit", async (event) => {
@@ -73,7 +93,7 @@ if (form) {
 
     const file = photoInput.files?.[0];
     let invalid = false;
-    if (!file) {
+    if (!file && !editing) {
       showError("photo", MESSAGES.photoMissing);
       invalid = true;
     }
@@ -81,33 +101,52 @@ if (form) {
       showError("category", MESSAGES.categoryMissing);
       invalid = true;
     }
-    if (invalid || !file) return;
+    if (!title.value.trim()) {
+      showError("title", MESSAGES.titleMissing);
+      invalid = true;
+    }
+    if (invalid) return;
 
     setBusy(true);
     try {
-      if (!optimized || optimized.file !== file) {
-        optimized = { file, result: await optimizePhoto(file) };
-      }
-      const { sm, md, lg } = optimized.result;
-
       const data = new FormData();
-      data.set("id", workId);
       data.set("category", category.value);
       data.set("title", title.value);
       data.set("description", description.value);
-      data.set("original", file, file.name);
-      data.set("sm", sm, `sm.${optimized.result.ext}`);
-      data.set("md", md, `md.${optimized.result.ext}`);
-      data.set("lg", lg, `lg.${optimized.result.ext}`);
 
-      const response = await fetch("/api/admin/works", {
-        method: "POST",
-        body: data,
-        credentials: "same-origin",
-      });
+      // Solo una foto elegida se optimiza y se envía (en edición, sin foto nueva no se toca R2).
+      if (file) {
+        if (!optimized || optimized.file !== file) {
+          optimized = { file, result: await optimizePhoto(file) };
+        }
+        const { sm, md, lg, ext } = optimized.result;
+        data.set("original", file, file.name);
+        data.set("sm", sm, `sm.${ext}`);
+        data.set("md", md, `md.${ext}`);
+        data.set("lg", lg, `lg.${ext}`);
+        if (editing) data.set("baseVersion", baseVersion);
+      }
+      if (!editing) data.set("id", workId);
 
-      if (response.status === 201) {
-        window.location.assign("/admin?publicado=1");
+      const response = await fetch(
+        editing
+          ? `/api/admin/works/${encodeURIComponent(editId)}`
+          : "/api/admin/works",
+        {
+          method: editing ? "PUT" : "POST",
+          body: data,
+          credentials: "same-origin",
+        },
+      );
+
+      if (response.status === (editing ? 200 : 201)) {
+        window.location.assign(
+          editing ? "/admin?actualizado=1" : "/admin?publicado=1",
+        );
+        return;
+      }
+      if (editing && response.status === 404) {
+        window.location.assign("/admin?noDisponible=1");
         return;
       }
       if (response.status === 401) {

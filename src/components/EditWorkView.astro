@@ -1,0 +1,30 @@
+---
+import PanelHeader from "./PanelHeader.astro";
+import WorkForm from "./WorkForm.astro";
+import type { EditValues } from "../lib/works/edit-view";
+import type { Category } from "../lib/works/store";
+
+interface Props {
+  categories?: Category[];
+  /** `undefined` si el trabajo no existe, está retirado o no se pudo leer. */
+  work?: EditValues;
+  /** Mensaje ya resuelto cuando no se puede mostrar el formulario. */
+  error?: string;
+}
+
+const { categories, work, error } = Astro.props;
+---
+
+<PanelHeader title="Editar trabajo" />
+{error || !work || !categories ? (
+  <>
+    <p class="form-error" role="alert">
+      {error}
+    </p>
+    <a class="link-home" href="/admin">
+      Volver a Mis trabajos
+    </a>
+  </>
+) : (
+  <WorkForm categories={categories} work={work} />
+)}

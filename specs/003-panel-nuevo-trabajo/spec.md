@@ -102,7 +102,7 @@ Si la administradora se arrepiente, puede volver a la lista sin guardar nada. Si
 - **FR-002**: La lista MUST mostrar por cada trabajo su miniatura, su título (o, si no tiene, su categoría) y su categoría, ordenados del más reciente al más antiguo.
 - **FR-003**: Cuando no existan trabajos, el panel MUST mostrar un mensaje amable que invite a crear el primero, en lugar de una pantalla vacía.
 - **FR-004**: El botón "+ Nuevo trabajo" MUST abrir el formulario de nuevo trabajo, según la pantalla 5 de los mockups.
-- **FR-005**: El formulario MUST pedir foto y categoría como obligatorios, y título y descripción como opcionales, con un único botón "Publicar".
+- **FR-005** *(el título pasa a obligatorio en la spec 004)*: El formulario MUST pedir foto y categoría como obligatorios, y título y descripción como opcionales, con un único botón "Publicar".
 - **FR-006**: El campo de foto MUST permitir elegir una imagen desde la galería o tomarla con la cámara del celular.
 - **FR-007**: El formulario MUST mostrar una vista previa de la foto elegida antes de publicar.
 - **FR-008**: La categoría MUST elegirse de la lista fija: Tortas, Postres, Rollos y Otros.
@@ -150,7 +150,7 @@ Si la administradora se arrepiente, puede volver a la lista sin guardar nada. Si
 - El tamaño máximo de foto y el peso objetivo de cada versión se fijarán en la planificación, respetando los ADR 0004 y 0005 y los límites del plan gratuito.
 - El orden en la lista es siempre el más reciente primero; ordenar o destacar trabajos (HU-12) queda fuera de alcance.
 - Que el trabajo "aparezca en el catálogo público" (HU-07) se cumple en el Hito 4; aquí basta con que quede guardado y listo para mostrarse.
-- Fuera de alcance: editar y retirar trabajos y su diálogo de confirmación (Hito 5; HU-09, HU-10), reemplazar la foto, catálogo público y detalle, WhatsApp, gestión de categorías, versión de escritorio del panel y estados de carga/error de foto más elaborados de lo descrito.
-- En esta lista, los botones "Editar" y "Retirar" de los mockups no se muestran hasta que existan esas funciones.
+- Fuera de alcance *(reemplazado por la [spec 004](../004-editar-retirar-trabajos/spec.md): editar, retirar y reemplazar la foto ya están implementados)*: editar y retirar trabajos y su diálogo de confirmación (Hito 5; HU-09, HU-10), reemplazar la foto, catálogo público y detalle, WhatsApp, gestión de categorías, versión de escritorio del panel y estados de carga/error de foto más elaborados de lo descrito.
+- *(Reemplazado por la spec 004: la lista ya muestra "Editar" y "Retirar".)* En esta lista, los botones "Editar" y "Retirar" de los mockups no se muestran hasta que existan esas funciones.
 - Debe respetarse el costo $0 recurrente (principio I) y la validación en dispositivo móvil real (principio II).
 - Debe haber pruebas automatizadas para la validación del formulario, el rechazo de archivos inválidos, la eliminación de metadatos y el flujo de creación (principio V).

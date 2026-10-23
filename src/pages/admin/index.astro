@@ -20,8 +20,23 @@ try {
   Astro.response.status = 503;
 }
 const published = Astro.url.searchParams.get("publicado") === "1";
+// Solo un aviso, con esta precedencia (contrato http-routes).
+const params = Astro.url.searchParams;
+const notice =
+  params.get("retirado") === "1"
+    ? "retired"
+    : params.get("actualizado") === "1"
+      ? "updated"
+      : params.get("noDisponible") === "1"
+        ? "notAvailable"
+        : undefined;
 ---
 
 <BaseLayout title="Panel de trabajos | Samuelé Repostería">
-  <WorksPanel items={items} error={error} published={published} />
+  <WorksPanel
+    items={items}
+    error={error}
+    published={published}
+    notice={notice}
+  />
 </BaseLayout>

@@ -32,6 +32,21 @@ describe("toPanelItems", () => {
     expect(item.category).toBe("Postres");
   });
 
+  it("enlaza a la página de edición", () => {
+    const [item] = toPanelItems([row({})]);
+    expect(item.editHref).toBe(
+      "/admin/works/3f2b8c1e-7a4d-4e0b-9c55-0a1b2c3d4e5f/edit",
+    );
+  });
+
+  it("el orden no cambia al editar (sigue el createdAt)", () => {
+    const items = toPanelItems([
+      row({ id: "a", createdAt: 1, title: "Editado después" }),
+      row({ id: "b", createdAt: 2 }),
+    ]);
+    expect(items.map((i) => i.id)).toEqual(["b", "a"]);
+  });
+
   it("arma la URL de la miniatura", () => {
     const [item] = toPanelItems([row({ photoExt: "jpg", photoVersion: 2 })]);
     expect(item.thumbnailUrl).toBe(
