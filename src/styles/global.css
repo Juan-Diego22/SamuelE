@@ -469,6 +469,10 @@ main {
   margin: 0 0 1.25rem;
 }
 
+.retire-dialog .form-error {
+  margin: -0.5rem 0 1.25rem;
+}
+
 .dialog-actions {
   display: flex;
   gap: 0.75rem;

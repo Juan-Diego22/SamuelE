@@ -13,6 +13,10 @@ const jpegBytes = () =>
   new Uint8Array([
     0xff, 0xd8, 0xff, 0xe0, 0, 4, 0, 0, 0xff, 0xda, 0, 2, 1, 2, 0xff, 0xd9,
   ]);
+const otherJpegBytes = () =>
+  new Uint8Array([
+    0xff, 0xd8, 0xff, 0xe0, 0, 4, 0, 0, 0xff, 0xda, 0, 2, 7, 8, 0xff, 0xd9,
+  ]);
 const exifJpegBytes = () =>
   new Uint8Array([
     0xff,
@@ -208,12 +212,29 @@ describe("updateWork con foto nueva", () => {
   it("mismo guardado repetido → éxito sin escribir", async () => {
     const { mediaStore, run } = await setup();
     await run(photoArgs());
-    mediaStore.files.clear();
+    const before = [...mediaStore.files.keys()].sort();
     expect(await run(photoArgs())).toEqual({
       status: "updated",
       photoVersion: 2,
     });
-    expect(mediaStore.files.size).toBe(0);
+    expect([...mediaStore.files.keys()].sort()).toEqual(before);
+  });
+
+  it("otra foto sobre la versión ya avanzada por otra pestaña → conflict", async () => {
+    const { mediaStore, run } = await setup();
+    await run(photoArgs());
+    const other = {
+      ...photoArgs(),
+      derivatives: {
+        sm: otherJpegBytes(),
+        md: jpegBytes(),
+        lg: jpegBytes(),
+      },
+    };
+    expect(await run(other)).toEqual({ status: "conflict" });
+    expect(mediaStore.files.get(`works/${ID}-2/sm.jpg`)?.bytes).toEqual(
+      jpegBytes(),
+    );
   });
 
   it("baseVersion distinta → conflict sin dejar archivos", async () => {

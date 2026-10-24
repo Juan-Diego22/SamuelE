@@ -1,3 +1,4 @@
+import { derivativeKey } from "./keys";
 import type { PhotoExt } from "./keys";
 import { validateDerivatives, validateOriginal } from "./media";
 import { MESSAGES } from "./messages";
@@ -26,6 +27,30 @@ export type UpdateWorkResult =
   | { status: "not_available" }
   | { status: "conflict" }
   | { status: "unavailable" };
+
+async function readBytes(
+  body: ReadableStream | Uint8Array,
+): Promise<Uint8Array> {
+  return body instanceof Uint8Array
+    ? body
+    : new Uint8Array(await new Response(body).arrayBuffer());
+}
+
+/** ¿La versión guardada es la misma foto que llega? Distingue un reintento de otra pestaña. */
+async function isSamePhoto(
+  mediaStore: MediaStore,
+  id: string,
+  version: number,
+  ext: string,
+  sm: Uint8Array,
+): Promise<boolean> {
+  const stored = await mediaStore.get(
+    derivativeKey(id, version, "sm", ext as PhotoExt),
+  );
+  if (!stored) return false;
+  const bytes = await readBytes(stored.body);
+  return bytes.length === sm.length && bytes.every((b, i) => b === sm[i]);
+}
 
 const invalid = ({
   field,
@@ -97,7 +122,17 @@ export async function updateWork(
     }
     const version = baseVersion + 1;
     // Reintento de un guardado con foto que ya se aplicó: éxito sin escribir de nuevo.
-    if (current.photoVersion === version) {
+    // Si la foto guardada es otra, la versión la dejó un guardado distinto (otra pestaña).
+    if (
+      current.photoVersion === version &&
+      (await isSamePhoto(
+        mediaStore,
+        id,
+        version,
+        current.photoExt,
+        derivatives.sm as Uint8Array,
+      ))
+    ) {
       return { status: "updated", photoVersion: version };
     }
     if (current.photoVersion !== baseVersion) return { status: "conflict" };
