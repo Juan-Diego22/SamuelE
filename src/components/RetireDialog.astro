@@ -1,0 +1,23 @@
+<dialog
+  id="retire-dialog"
+  class="retire-dialog"
+  aria-labelledby="retire-dialog-title"
+>
+  <h2 id="retire-dialog-title" class="dialog-title">
+    ¿Retirar este trabajo?
+  </h2>
+  <p id="retire-dialog-name" class="dialog-name"></p>
+  <p class="dialog-text">Dejará de verse en el catálogo público.</p>
+  <p id="retire-dialog-error" class="form-error" role="alert" hidden></p>
+  <form id="retire-form" method="post" class="dialog-actions">
+    <button type="button" class="btn-cancel" data-retire-cancel>
+      Cancelar
+    </button>
+    <button type="submit" class="btn-confirm">
+      Retirar
+    </button>
+  </form>
+</dialog>
+<script>
+  import "../scripts/retire-dialog";
+</script>

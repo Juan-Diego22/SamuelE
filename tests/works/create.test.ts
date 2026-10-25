@@ -33,7 +33,7 @@ function setup() {
     createWork({
       worksStore,
       mediaStore,
-      fields: { id: ID, category: "1", title: "", description: "" },
+      fields: { id: ID, category: "1", title: "Torta", description: "" },
       original: exifJpegBytes(),
       derivatives: { sm: jpegBytes(), md: jpegBytes(), lg: jpegBytes() },
       now: NOW,
@@ -43,13 +43,13 @@ function setup() {
 }
 
 describe("createWork", () => {
-  it("con solo foto y categoría crea el trabajo y sus cuatro archivos", async () => {
+  it("con foto, categoría y título crea el trabajo y sus cuatro archivos", async () => {
     const { worksStore, mediaStore, run } = setup();
     expect(await run()).toEqual({ status: "created", id: ID });
     expect(worksStore.works.get(ID)).toEqual({
       id: ID,
       categoryId: 1,
-      title: null,
+      title: "Torta",
       description: null,
       photoVersion: 1,
       photoExt: "jpg",
@@ -124,9 +124,14 @@ describe("createWork", () => {
     });
     expect(
       await run({
-        fields: { id: ID, category: "", title: "", description: "" },
+        fields: { id: ID, category: "", title: "Torta", description: "" },
       }),
     ).toMatchObject({ status: "invalid", field: "category" });
+    expect(
+      await run({
+        fields: { id: ID, category: "1", title: "  ", description: "" },
+      }),
+    ).toMatchObject({ status: "invalid", field: "title" });
     expect(
       await run({
         derivatives: { sm: exifJpegBytes(), md: jpegBytes(), lg: jpegBytes() },

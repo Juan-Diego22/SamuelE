@@ -36,16 +36,18 @@ export const works = sqliteTable(
     categoryId: integer("category_id")
       .notNull()
       .references(() => categories.id),
-    /** ≤80 caracteres; nulo si queda vacío. */
+    /** ≤80 caracteres; obligatorio al escribir, nulo solo en filas antiguas de 003. */
     title: text("title"),
     /** ≤1000 caracteres; nulo si queda vacío. */
     description: text("description"),
-    /** Cambiará al reemplazar la foto (HU-09). */
+    /** Sube en 1 cada vez que se reemplaza la foto (HU-09). */
     photoVersion: integer("photo_version").notNull(),
     /** `webp` o `jpg`; igual para las tres derivadas. */
     photoExt: text("photo_ext").notNull(),
     /** Milisegundos desde 1970 (UTC). */
     createdAt: integer("created_at").notNull(),
+    /** `NULL` = activo. Milisegundos desde 1970 (UTC) del momento del retiro. */
+    retiredAt: integer("retired_at"),
   },
   (table) => [
     index("works_created_at_idx").on(table.createdAt),

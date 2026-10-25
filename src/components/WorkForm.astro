@@ -1,36 +1,40 @@
 ---
+import PhotoDrop from "./PhotoDrop.astro";
 import type { Category } from "../lib/works/store";
 import { MAX_DESCRIPTION_LENGTH, MAX_TITLE_LENGTH } from "../lib/works/limits";
 
+import type { EditValues } from "../lib/works/edit-view";
+
 interface Props {
   categories: Category[];
+  /** Con él, el formulario edita ese trabajo en lugar de publicar uno nuevo. */
+  work?: EditValues;
 }
 
-const { categories } = Astro.props;
+const { categories, work } = Astro.props;
 ---
 
 <noscript>
   <p class="form-error">Necesitas activar JavaScript para publicar fotos.</p>
 </noscript>
-<form id="work-form" class="work-form" novalidate>
+<form
+  id="work-form"
+  class="work-form"
+  novalidate
+  data-mode={work ? "edit" : "new"}
+  data-work-id={work?.id}
+  data-photo-version={work?.photoVersion}
+>
   <div class="field">
-    <label for="photo">Foto</label>
-    <div class="photo-upload">
-      <input
-        id="photo"
-        name="photo"
-        type="file"
-        accept="image/jpeg,image/png,image/webp"
-        required
-        aria-describedby="error-photo"
-      />
-      <img
-        id="photo-preview"
-        class="photo-preview"
-        alt="Vista previa de la foto elegida"
-        hidden
-      />
-    </div>
+    <label for="photo">
+      Foto
+      <span class="required" aria-hidden="true">
+        {" "}
+        *
+      </span>
+      <span class="sr-only"> (obligatorio)</span>
+    </label>
+    <PhotoDrop currentPhotoUrl={work?.photoUrl} />
     <p
       id="error-photo"
       class="form-error"
@@ -41,16 +45,25 @@ const { categories } = Astro.props;
   </div>
 
   <div class="field">
-    <label for="category">Categoría</label>
+    <label for="category">
+      Categoría
+      <span class="required" aria-hidden="true">
+        {" "}
+        *
+      </span>
+      <span class="sr-only"> (obligatorio)</span>
+    </label>
     <select
       id="category"
       name="category"
       required
       aria-describedby="error-category"
     >
-      <option value="">Elige una categoría</option>
+      <option value="">Selecciona una categoría</option>
       {categories.map((c) => (
-        <option value={String(c.id)}>{c.name}</option>
+        <option value={String(c.id)} selected={c.id === work?.categoryId}>
+          {c.name}
+        </option>
       ))}
     </select>
     <p
@@ -63,12 +76,22 @@ const { categories } = Astro.props;
   </div>
 
   <div class="field">
-    <label for="title">Título (opcional)</label>
+    <label for="title">
+      Título
+      <span class="required" aria-hidden="true">
+        {" "}
+        *
+      </span>
+      <span class="sr-only"> (obligatorio)</span>
+    </label>
     <input
       id="title"
       name="title"
       type="text"
       maxlength={MAX_TITLE_LENGTH}
+      placeholder="Ej: Torta de Chocolate"
+      required
+      value={work?.title}
       aria-describedby="error-title"
     />
     <p
@@ -86,9 +109,10 @@ const { categories } = Astro.props;
       id="description"
       name="description"
       rows="4"
+      placeholder="Describe los ingredientes, tamaño, etc."
       maxlength={MAX_DESCRIPTION_LENGTH}
       aria-describedby="error-description"
-    ></textarea>
+    >{work?.description}</textarea>
     <p
       id="error-description"
       class="form-error"
@@ -107,7 +131,7 @@ const { categories } = Astro.props;
   ></p>
 
   <button type="submit" class="btn-primary">
-    Publicar
+    {work ? "Guardar" : "Publicar"}
   </button>
   <a class="btn-secondary" href="/admin">
     Cancelar

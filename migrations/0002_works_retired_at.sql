@@ -1,0 +1,1 @@
+ALTER TABLE `works` ADD `retired_at` integer;

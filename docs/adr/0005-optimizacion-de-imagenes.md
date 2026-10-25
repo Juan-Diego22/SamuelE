@@ -36,6 +36,7 @@ El procesamiento se hace **en el navegador de la administradora**. El servidor *
 - La calidad y el tiempo dependen del celular de la administradora. **Se prueba en su celular real** (principio II, definición de terminado).
 - Pruebas automatizadas: la elección de tamaños y formato y la validación en el servidor son lógica pura, testeable sin navegador. Un caso de prueba verifica que una foto con GPS no conserva metadatos en las derivadas.
 - Si se agrega edición automática en el futuro, se aplica sobre la original guardada.
+- Reemplazo de foto (HU-09): cada reemplazo sube `photo_version` en 1 y escribe la versión nueva completa en R2 antes de actualizar D1; la versión anterior se borra solo después de confirmar (si falla el borrado quedan archivos huérfanos, sin efecto visible). La URL pública incluye la versión, así que `immutable` no deja ver la foto vieja y no hace falta invalidar caché.
 
 ## Alternativas consideradas
 

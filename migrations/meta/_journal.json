@@ -15,6 +15,13 @@
       "when": 1792445807177,
       "tag": "0001_categories_and_works",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1792789597715,
+      "tag": "0002_works_retired_at",
+      "breakpoints": true
     }
   ]
 }

@@ -15,8 +15,8 @@ Mockups interactivos de la Fase 1, diseñados móvil primero (390×844) a partir
 | 1 | Catálogo público | Móvil | Cabecera con logo, chips de categorías con scroll horizontal (Todos, Tortas, Postres, Rollos, Otros), grilla de 2 columnas, botón flotante de WhatsApp, pie con contacto, zona de atención y anticipación, texto "Cotiza por WhatsApp o llamada" (sin precios) |
 | 2 | Detalle de un trabajo | Móvil | Foto grande, categoría, título, descripción, botón "Preguntar por WhatsApp", regreso al catálogo |
 | 3 | Inicio de sesión | Móvil | Logo grande, "Panel de trabajos", correo, contraseña, error genérico "Correo o contraseña incorrectos.", botón "Ingresar". Replica la referencia 4 |
-| 4 | Panel: lista de trabajos | Móvil | Logo pequeño, "Mis trabajos", "Salir", botón "+ Nuevo trabajo", tarjetas con miniatura, categoría, Editar y Retirar, y diálogo "¿Retirar este trabajo?" con Cancelar/Retirar. Replica la referencia 5 |
-| 5 | Panel: nuevo/editar trabajo | Móvil | Foto (galería o cámara) y categoría obligatorias; título y descripción opcionales; un solo botón "Publicar" |
+| 4 | Panel: lista de trabajos | Móvil | Logo pequeño, "Mis trabajos", "Salir", botón "+ Nuevo trabajo", tarjetas con miniatura, categoría, Editar y Retirar, y diálogo "¿Retirar este trabajo?" con Cancelar/Retirar. Replica la referencia 5. **Implementado** (spec 004): botones Editar/Retirar y diálogo |
+| 5 | Panel: nuevo/editar trabajo | Móvil | Foto (galería o cámara), categoría y título obligatorios; descripción opcional; botón "Publicar" ("Guardar" al editar). **Implementado** (spec 004): zona de foto con ícono de cámara, placeholders, "Selecciona una categoría" y asteriscos rojos |
 | 6 | Catálogo responsive | Tableta/escritorio | Cabecera horizontal con logo y lema, chips, grilla de 3 columnas, pie |
 
 ## Branding

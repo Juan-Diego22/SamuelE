@@ -69,6 +69,7 @@ describe("POST /api/admin/works", () => {
       "original",
       MESSAGES.photoMissing,
     ],
+    ["título vacío", { title: "  " }, "title", MESSAGES.titleMissing],
     ["título largo", { title: "a".repeat(81) }, "title", MESSAGES.titleTooLong],
     [
       "descripción larga",

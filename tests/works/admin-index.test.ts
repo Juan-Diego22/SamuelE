@@ -8,6 +8,7 @@ async function render(props: {
   items?: PanelItem[];
   error?: string;
   published?: boolean;
+  notice?: "retired" | "updated" | "notAvailable";
 }) {
   const container = await AstroContainer.create();
   return container.renderToString(WorksPanel, { props });
@@ -16,6 +17,7 @@ async function render(props: {
 const item = (over: Partial<PanelItem> = {}): PanelItem => ({
   id: "a",
   title: "Torta de fresa",
+  editHref: "/admin/works/a/edit",
   category: "Tortas",
   thumbnailUrl: "/media/works/a-1/sm.webp",
   ...over,
@@ -40,8 +42,54 @@ describe("Mis trabajos", () => {
     expect(html.match(/<img[^>]*class="work-thumb"/g)).toHaveLength(2);
     expect(html).toContain('alt="Foto de Torta de fresa"');
     expect(html).toContain("Postres");
-    expect(html).not.toContain("Editar");
-    expect(html).not.toContain("Retirar");
+  });
+
+  it("cada tarjeta tiene Editar y Retirar con el nombre del trabajo", async () => {
+    const html = await render({
+      items: [
+        item(),
+        item({ id: "b", title: "Cupcakes", editHref: "/admin/works/b/edit" }),
+      ],
+    });
+    expect(html).toContain('href="/admin/works/a/edit"');
+    expect(html).toContain('href="/admin/works/b/edit"');
+    expect(html).toContain('aria-label="Editar Torta de fresa"');
+    expect(html).toContain('aria-label="Retirar Cupcakes"');
+    expect(html.match(/data-retire(?!-)/g)).toHaveLength(2);
+    expect(html).toContain('data-work-id="b"');
+  });
+
+  it("un solo diálogo modal con el texto exacto y sus botones", async () => {
+    const html = await render({ items: [item(), item({ id: "b" })] });
+    expect(html.match(/<dialog/g)).toHaveLength(1);
+    expect(html).toContain('aria-labelledby="retire-dialog-title"');
+    expect(html).toContain("¿Retirar este trabajo?");
+    expect(html).toContain("Dejará de verse en el catálogo público.");
+    expect(html).toContain("Cancelar");
+    expect(html).toMatch(/<button[^>]*type="submit"[^>]*>\s*Retirar\s*</);
+  });
+
+  it.each([
+    ["retired", "Trabajo retirado."],
+    ["updated", "Trabajo actualizado."],
+    ["notAvailable", "Ese trabajo ya no está disponible."],
+  ] as const)("aviso %s con role=status", async (notice, text) => {
+    const html = await render({ items: [item()], notice });
+    expect(html).toContain(text);
+    expect(html).toContain('role="status"');
+    for (const other of [
+      "Trabajo retirado.",
+      "Trabajo actualizado.",
+      "Ese trabajo ya no está disponible.",
+    ]) {
+      if (other !== text) expect(html).not.toContain(other);
+    }
+  });
+
+  it("al no quedar trabajos aparece el estado vacío", async () => {
+    const html = await render({ items: [], notice: "retired" });
+    expect(html).toContain("Todavía no tienes trabajos. Publica el primero.");
+    expect(html).toContain("Trabajo retirado.");
   });
 
   it("escapa el texto del usuario", async () => {

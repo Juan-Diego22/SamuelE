@@ -1,6 +1,5 @@
-import { derivativeKey, originalKey } from "./keys";
-import type { PhotoSize } from "./keys";
 import { validateDerivatives, validateOriginal } from "./media";
+import { photoFiles } from "./photo-files";
 import type { ErrorField } from "./messages";
 import type { MediaStore, WorksStore } from "./store";
 import { validateFields } from "./validate";
@@ -23,12 +22,6 @@ export type CreateWorkResult =
   | { status: "created"; id: string }
   | { status: "invalid"; field: ErrorField; message: string }
   | { status: "unavailable" };
-
-const ORIGINAL_TYPES = {
-  jpeg: "image/jpeg",
-  png: "image/png",
-  webp: "image/webp",
-} as const;
 
 /**
  * Valida, escribe en R2 (original y derivadas) y al final en D1; si algo falla, deshace R2.
@@ -53,22 +46,14 @@ export async function createWork(
     // Reintento de un envío ya guardado: éxito sin escribir de nuevo (FR-016).
     if (await worksStore.workExists(id)) return { status: "created", id };
 
-    const ext = photos.ext;
-    const contentType = ext === "webp" ? "image/webp" : "image/jpeg";
-    const files: Array<[string, Uint8Array, string]> = [
-      [
-        originalKey(id, PHOTO_VERSION),
-        input.original as Uint8Array,
-        ORIGINAL_TYPES[original.type],
-      ],
-      ...(["sm", "md", "lg"] as PhotoSize[]).map(
-        (size): [string, Uint8Array, string] => [
-          derivativeKey(id, PHOTO_VERSION, size, ext),
-          derivatives[size] as Uint8Array,
-          contentType,
-        ],
-      ),
-    ];
+    const files = photoFiles({
+      id,
+      version: PHOTO_VERSION,
+      ext: photos.ext,
+      original: input.original as Uint8Array,
+      originalType: original.type,
+      derivatives,
+    });
     const keys = files.map(([key]) => key);
 
     const rollback = async () => {
@@ -89,7 +74,7 @@ export async function createWork(
         title,
         description,
         photoVersion: PHOTO_VERSION,
-        photoExt: ext,
+        photoExt: photos.ext,
         createdAt: now,
       });
       // "duplicate" por una carrera: las claves son las mismas, el trabajo ya existe.

@@ -1,6 +1,8 @@
 ---
 import PanelHeader from "./PanelHeader.astro";
+import RetireDialog from "./RetireDialog.astro";
 import WorkCard from "./WorkCard.astro";
+import { MESSAGES } from "../lib/works/messages";
 import type { PanelItem } from "../lib/works/list";
 
 interface Props {
@@ -10,9 +12,11 @@ interface Props {
   error?: string;
   /** Muestra el aviso de que se acaba de publicar un trabajo. */
   published?: boolean;
+  /** Aviso de la acción que acaba de ocurrir; solo se muestra uno. */
+  notice?: "retired" | "updated" | "notAvailable";
 }
 
-const { items, error, published = false } = Astro.props;
+const { items, error, published = false, notice } = Astro.props;
 ---
 
 <PanelHeader title="Mis trabajos" />
@@ -22,6 +26,11 @@ const { items, error, published = false } = Astro.props;
 {published && (
   <p class="form-success" role="status">
     Trabajo publicado.
+  </p>
+)}
+{notice && (
+  <p class="form-success" role="status">
+    {MESSAGES[notice]}
   </p>
 )}
 {error ? (
@@ -39,3 +48,4 @@ const { items, error, published = false } = Astro.props;
     Todavía no tienes trabajos. Publica el primero.
   </p>
 )}
+<RetireDialog />

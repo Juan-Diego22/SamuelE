@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { categories, works } from "../../db/schema";
 
@@ -15,6 +15,16 @@ export interface NewWork {
   photoVersion: number;
   photoExt: string;
   createdAt: number;
+  /** `null` o ausente = activo. */
+  retiredAt?: number | null;
+}
+
+/** Cambios de una edición; `photo` solo cuando se reemplaza la foto. */
+export interface WorkPatch {
+  categoryId: number;
+  title: string;
+  description: string | null;
+  photo?: { version: number; ext: string };
 }
 
 /** Trabajo con el nombre de su categoría, como lo necesita la lista del panel. */
@@ -32,7 +42,31 @@ export interface WorksStore {
   listWorks(limit: number): Promise<ListedWork[]>;
   /** ¿Ya existe un trabajo con este `id`? */
   workExists(id: string): Promise<boolean>;
+  /** El trabajo **activo** con su categoría; `null` si no existe o está retirado. */
+  getWork(id: string): Promise<ListedWork | null>;
+  /** Borrado lógico: fija `retired_at` solo si sigue activo. */
+  retireWork(id: string, now: number): Promise<"retired" | "not_found">;
+  /**
+   * Actualiza un trabajo activo (`created_at` no cambia). Con `expectedPhotoVersion`,
+   * `"conflict"` si la versión de la foto ya es otra.
+   */
+  updateWork(
+    id: string,
+    patch: WorkPatch,
+    expectedPhotoVersion?: number,
+  ): Promise<"updated" | "not_found" | "conflict">;
 }
+
+const listedColumns = {
+  id: works.id,
+  categoryId: works.categoryId,
+  title: works.title,
+  description: works.description,
+  photoVersion: works.photoVersion,
+  photoExt: works.photoExt,
+  createdAt: works.createdAt,
+  categoryName: categories.name,
+};
 
 /** Almacén de archivos (R2); la lógica no conoce el binding. */
 export interface MediaStore {
@@ -78,22 +112,13 @@ export function createD1WorksStore(d1: D1Database): WorksStore {
       }
     },
     async listWorks(limit) {
-      const rows = await db
-        .select({
-          id: works.id,
-          categoryId: works.categoryId,
-          title: works.title,
-          description: works.description,
-          photoVersion: works.photoVersion,
-          photoExt: works.photoExt,
-          createdAt: works.createdAt,
-          categoryName: categories.name,
-        })
+      return db
+        .select(listedColumns)
         .from(works)
         .innerJoin(categories, eq(works.categoryId, categories.id))
+        .where(isNull(works.retiredAt))
         .orderBy(desc(works.createdAt))
         .limit(limit);
-      return rows;
     },
     async workExists(id) {
       const rows = await db
@@ -102,6 +127,54 @@ export function createD1WorksStore(d1: D1Database): WorksStore {
         .where(eq(works.id, id))
         .limit(1);
       return rows.length > 0;
+    },
+    async getWork(id) {
+      const rows = await db
+        .select(listedColumns)
+        .from(works)
+        .innerJoin(categories, eq(works.categoryId, categories.id))
+        .where(and(eq(works.id, id), isNull(works.retiredAt)))
+        .limit(1);
+      return rows[0] ?? null;
+    },
+    async retireWork(id, now) {
+      const rows = await db
+        .update(works)
+        .set({ retiredAt: now })
+        .where(and(eq(works.id, id), isNull(works.retiredAt)))
+        .returning({ id: works.id });
+      return rows.length > 0 ? "retired" : "not_found";
+    },
+    async updateWork(id, patch, expectedPhotoVersion) {
+      const rows = await db
+        .update(works)
+        .set({
+          categoryId: patch.categoryId,
+          title: patch.title,
+          description: patch.description,
+          ...(patch.photo && {
+            photoVersion: patch.photo.version,
+            photoExt: patch.photo.ext,
+          }),
+        })
+        .where(
+          and(
+            eq(works.id, id),
+            isNull(works.retiredAt),
+            expectedPhotoVersion === undefined
+              ? undefined
+              : eq(works.photoVersion, expectedPhotoVersion),
+          ),
+        )
+        .returning({ id: works.id });
+      if (rows.length > 0) return "updated";
+      // Sin filas: ¿ya no está activo o cambió la versión de la foto?
+      const current = await db
+        .select({ photoVersion: works.photoVersion })
+        .from(works)
+        .where(and(eq(works.id, id), isNull(works.retiredAt)))
+        .limit(1);
+      return current.length > 0 ? "conflict" : "not_found";
     },
   };
 }
@@ -133,19 +206,28 @@ export const DEFAULT_CATEGORIES: Category[] = [
   { id: 4, name: "Otros" },
 ];
 
-/** Almacén en memoria para pruebas; `failInsert` fuerza un fallo al insertar. */
+/** Almacén en memoria para pruebas; `fail*` fuerzan un fallo de D1. */
 export function createMemoryWorksStore(
   initialCategories: Category[] = DEFAULT_CATEGORIES,
 ): WorksStore & {
   works: Map<string, NewWork>;
   failInsert: boolean;
   failList: boolean;
+  failRetire: boolean;
+  failUpdate: boolean;
 } {
   const rows = new Map<string, NewWork>();
+  const listed = (w: NewWork): ListedWork => ({
+    ...w,
+    categoryName:
+      initialCategories.find((c) => c.id === w.categoryId)?.name ?? "",
+  });
   const store = {
     works: rows,
     failInsert: false,
     failList: false,
+    failRetire: false,
+    failUpdate: false,
     async listCategories() {
       return initialCategories.map((c) => ({ ...c }));
     },
@@ -161,16 +243,47 @@ export function createMemoryWorksStore(
     async listWorks(limit: number) {
       if (store.failList) throw new Error("fallo forzado de D1");
       return [...rows.values()]
+        .filter((w) => w.retiredAt == null)
         .sort((a, b) => b.createdAt - a.createdAt)
         .slice(0, limit)
-        .map((w) => ({
-          ...w,
-          categoryName:
-            initialCategories.find((c) => c.id === w.categoryId)?.name ?? "",
-        }));
+        .map(listed);
     },
     async workExists(id: string) {
       return rows.has(id);
+    },
+    async getWork(id: string) {
+      const work = rows.get(id);
+      return work && work.retiredAt == null ? listed(work) : null;
+    },
+    async retireWork(id: string, now: number) {
+      if (store.failRetire) throw new Error("fallo forzado de D1");
+      const work = rows.get(id);
+      if (!work || work.retiredAt != null) return "not_found" as const;
+      work.retiredAt = now;
+      return "retired" as const;
+    },
+    async updateWork(
+      id: string,
+      patch: WorkPatch,
+      expectedPhotoVersion?: number,
+    ) {
+      if (store.failUpdate) throw new Error("fallo forzado de D1");
+      const work = rows.get(id);
+      if (!work || work.retiredAt != null) return "not_found" as const;
+      if (
+        expectedPhotoVersion !== undefined &&
+        work.photoVersion !== expectedPhotoVersion
+      ) {
+        return "conflict" as const;
+      }
+      work.categoryId = patch.categoryId;
+      work.title = patch.title;
+      work.description = patch.description;
+      if (patch.photo) {
+        work.photoVersion = patch.photo.version;
+        work.photoExt = patch.photo.ext;
+      }
+      return "updated" as const;
     },
   };
   return store;

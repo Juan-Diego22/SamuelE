@@ -244,27 +244,90 @@ main {
   font: inherit;
 }
 
-.photo-upload {
-  display: grid;
-  gap: 0.75rem;
-  padding: 1rem;
-  border: 2px dashed var(--dorado);
-  border-radius: 12px;
-  background: #fff;
-}
-
-.photo-upload input[type="file"] {
-  width: 100%;
-  min-height: 48px;
-  font: inherit;
-}
-
 .photo-preview {
   display: block;
   width: 100%;
   max-height: 20rem;
   object-fit: contain;
   border-radius: 8px;
+}
+
+/* Zona de foto (mockup "Panel: Nuevo"): toda la zona es un <label> tocable */
+.photo-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 160px;
+  padding: 1.5rem;
+  border: 2px dashed var(--dorado);
+  border-radius: 8px;
+  background: #f5f0eb;
+  text-align: center;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.photo-drop:active {
+  background: #e8d5c4;
+}
+
+.photo-drop:focus-within {
+  outline: 3px solid var(--rosa-oscuro);
+  outline-offset: 2px;
+}
+
+/* Visualmente oculto pero enfocable: no se usa display: none */
+.photo-drop-input,
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.photo-drop-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.photo-drop.has-photo .photo-drop-empty,
+.photo-drop:not(.has-photo) .photo-drop-change {
+  display: none;
+}
+
+.photo-drop-icon {
+  color: var(--chocolate);
+}
+
+.photo-drop-text {
+  color: var(--chocolate);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.photo-drop-hint,
+.photo-drop-change {
+  color: #5c4033;
+  font-size: 0.75rem;
+}
+
+.required {
+  color: var(--rojo);
+}
+
+.work-form ::placeholder {
+  color: #6b5a52;
+  opacity: 1;
 }
 
 [hidden] {
@@ -328,4 +391,116 @@ main {
   background: #fff;
   color: var(--chocolate);
   font-weight: 600;
+}
+
+/* Acciones de cada tarjeta (mockup: .btn-small) */
+.work-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.btn-small {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 1.125rem;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-small-edit {
+  border: 1.5px solid var(--chocolate);
+  color: var(--chocolate);
+}
+
+.btn-small-delete {
+  border: 1.5px solid var(--rojo);
+  color: var(--rojo);
+}
+
+.btn-small:focus-visible,
+.retire-dialog button:focus-visible {
+  outline: 3px solid var(--rosa-oscuro);
+  outline-offset: 2px;
+}
+
+/* Diálogo de retiro (mockup: .dialog) */
+.retire-dialog {
+  width: calc(100% - 2.5rem);
+  max-width: 24rem;
+  padding: 1.5rem 1.375rem 1.375rem;
+  border: 0;
+  border-radius: 20px;
+  background: var(--crema);
+  color: var(--chocolate);
+  text-align: left;
+}
+
+.retire-dialog::backdrop {
+  background: rgb(59 31 20 / 0.6);
+}
+
+.dialog-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.dialog-name {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.dialog-name:empty {
+  display: none;
+}
+
+.dialog-text {
+  margin: 0 0 1.25rem;
+}
+
+.retire-dialog .form-error {
+  margin: -0.5rem 0 1.25rem;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.dialog-actions button {
+  flex: 1;
+  min-height: 48px;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dialog-actions button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.btn-cancel {
+  border: 1.5px solid var(--chocolate);
+  background: transparent;
+  color: var(--chocolate);
+}
+
+.btn-confirm {
+  border: 1.5px solid var(--rojo);
+  background: var(--rojo);
+  color: #fff;
 }

@@ -20,5 +20,25 @@ const { item } = Astro.props;
   <div class="work-info">
     <p class="work-title">{item.title}</p>
     <p class="work-category">{item.category}</p>
+    <div class="work-actions">
+      <a
+        class="btn-small btn-small-edit"
+        href={item.editHref}
+        aria-label={`Editar ${item.title}`}
+      >
+        Editar
+      </a>
+      <button
+        type="button"
+        class="btn-small btn-small-delete"
+        hidden
+        data-retire
+        data-work-id={item.id}
+        data-work-title={item.title}
+        aria-label={`Retirar ${item.title}`}
+      >
+        Retirar
+      </button>
+    </div>
   </div>
 </li>

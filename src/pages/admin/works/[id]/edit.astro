@@ -1,0 +1,42 @@
+---
+import { env } from "cloudflare:workers";
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+import EditWorkView from "../../../../components/EditWorkView.astro";
+import { toEditValues } from "../../../../lib/works/edit-view";
+import type { EditValues } from "../../../../lib/works/edit-view";
+import { MESSAGES } from "../../../../lib/works/messages";
+import { createD1WorksStore } from "../../../../lib/works/store";
+import type { Category } from "../../../../lib/works/store";
+import { UUID } from "../../../../lib/works/validate";
+
+export const prerender = false;
+
+const id = Astro.params.id ?? "";
+let categories: Category[] | undefined;
+let work: EditValues | undefined;
+let error: string | undefined;
+if (!UUID.test(id)) {
+  error = MESSAGES.notAvailable;
+  Astro.response.status = 404;
+} else {
+  try {
+    const store = createD1WorksStore(env.DB);
+    const found = await store.getWork(id);
+    if (found) {
+      work = toEditValues(found);
+      categories = await store.listCategories();
+    } else {
+      error = MESSAGES.notAvailable;
+      Astro.response.status = 404;
+    }
+  } catch (cause) {
+    console.error(`No se pudo cargar el trabajo a editar: ${String(cause)}`);
+    error = MESSAGES.formUnavailable;
+    Astro.response.status = 503;
+  }
+}
+---
+
+<BaseLayout title="Editar trabajo | Samuelé Repostería">
+  <EditWorkView categories={categories} work={work} error={error} />
+</BaseLayout>
