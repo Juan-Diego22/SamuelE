@@ -102,7 +102,7 @@ Cada PR ejecuta `ci.yml`: tipos, estilo, pruebas y build. Lighthouse corre como 
 
 ## Publicación
 
-Al fusionar en `main`, `deploy.yml` vuelve a validar, construye y publica con `wrangler deploy` en `https://<worker>.<subdominio>.workers.dev`. No hay vista previa por PR. Requiere los secretos de GitHub `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID` (pasos en [quickstart.md](specs/001-project-skeleton/quickstart.md)); nunca se guardan en el repositorio.
+Al fusionar en `main`, `deploy.yml` vuelve a validar, construye y publica con `wrangler deploy` en `https://<worker>.<subdominio>.workers.dev` (producción: `https://samuele-reposteria.samuele-re.workers.dev`). No hay vista previa por PR. Requiere los secretos de GitHub `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID` (pasos en [quickstart.md](specs/001-project-skeleton/quickstart.md)); nunca se guardan en el repositorio.
 
 ## Si algo falla
 
