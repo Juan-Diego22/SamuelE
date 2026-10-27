@@ -1,0 +1,25 @@
+---
+import type { CatalogCategory } from "../lib/catalog/categories";
+
+interface Props {
+  categories: CatalogCategory[];
+}
+
+const { categories } = Astro.props;
+---
+
+<nav class="chips-nav" aria-label="Categorías">
+  <ul class="chips">
+    {categories.map((category) => (
+      <li>
+        <a
+          class:list={["chip", { "chip-active": category.active }]}
+          href={category.href}
+          aria-current={category.active ? "page" : undefined}
+        >
+          {category.name}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>

@@ -67,6 +67,7 @@ Como visitante, quiero escribir por WhatsApp en un toque para preguntar por un p
 - Hay un botón de WhatsApp visible en el catálogo en general.
 - En el detalle de un trabajo, el botón abre una conversación con un mensaje prellenado que menciona ese trabajo.
 - No se muestran precios; el texto indica que se cotiza por WhatsApp o llamada.
+- _Ajuste (spec 005, decisión del negocio)_: sin botón flotante; el contacto general está en el pie y el botón del detalle es la vía principal. La leyenda queda como "Cotiza por WhatsApp".
 
 **HU-04. Compartir el enlace con una buena vista previa** · Should
 Como administradora, quiero que al pegar el enlace en WhatsApp o Instagram se vea un título y una imagen atractivos.
@@ -76,6 +77,7 @@ Como administradora, quiero que al pegar el enlace en WhatsApp o Instagram se ve
 Como visitante, quiero saber cómo hacer un pedido y qué debo tener en cuenta.
 - Hay una sección con datos de contacto, la anticipación sugerida para pedir y la zona de atención.
 - La administradora puede cambiar ese texto sin pedir ayuda a nadie (puede resolverse como contenido editable o, en una primera versión, como texto fijo).
+- _Ajuste (spec 005, decisión del negocio)_: el pie solo lleva el contacto por WhatsApp; zona de atención y anticipación quedan fuera por ahora.
 
 ### Épica 2: Panel de administración
 

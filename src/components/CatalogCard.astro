@@ -1,0 +1,43 @@
+---
+import { CATALOG_MESSAGES } from "../lib/catalog/messages";
+import type { CatalogCard } from "../lib/catalog/view";
+
+interface Props {
+  card: CatalogCard;
+  /** Fotos de la primera pantalla: se piden sin carga diferida. */
+  priority?: boolean;
+  /** Solo la primera foto sube su prioridad de descarga. */
+  first?: boolean;
+}
+
+const { card, priority = false, first = false } = Astro.props;
+---
+
+<li>
+  <a
+    class="catalog-card"
+    href={card.href}
+    aria-label={`${CATALOG_MESSAGES.viewDetails}: ${card.title}`}
+  >
+    <span class="photo-box">
+      <img
+        src={card.photoUrl}
+        alt={card.alt}
+        width="400"
+        height="400"
+        decoding="async"
+        loading={priority ? undefined : "lazy"}
+        fetchpriority={first ? "high" : undefined}
+        data-photo
+      />
+    </span>
+    <span class="catalog-card-info">
+      <span class="catalog-card-category">{card.category}</span>
+      <span class="catalog-card-title">{card.title}</span>
+    </span>
+    <span class="catalog-card-cta" aria-hidden="true">
+      {CATALOG_MESSAGES.viewDetails}
+      <span class="catalog-card-arrow">→</span>
+    </span>
+  </a>
+</li>

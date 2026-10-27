@@ -504,3 +504,308 @@ main {
   background: var(--rojo);
   color: #fff;
 }
+
+/* Catálogo público (spec 005): móvil primero, 2 columnas y 3 desde tableta.
+   El texto usa --rosa-oscuro: --rosa no llega a 4.5:1 sobre blanco. */
+main.catalog {
+  max-width: 60rem;
+  padding: 1rem 1rem 2rem;
+  text-align: left;
+}
+
+.catalog-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0 1rem;
+}
+
+.catalog-logo {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--dorado);
+}
+
+.catalog-name {
+  margin: 0;
+  font-size: 1.75rem;
+  line-height: 1.1;
+}
+
+.catalog-tagline {
+  margin: 0.125rem 0 0;
+  letter-spacing: 0.05em;
+}
+
+.chips-nav {
+  margin: 0 -1rem 1rem;
+}
+
+.chips {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.25rem 1rem;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--dorado) transparent;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--dorado);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--chocolate);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.chip-active {
+  background: var(--rosa-oscuro);
+  border-color: var(--rosa-oscuro);
+  color: #fff;
+}
+
+.chip:focus-visible,
+.catalog-card:focus-visible {
+  outline: 3px solid var(--rosa-oscuro);
+  outline-offset: 2px;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.catalog-card {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgb(59 31 20 / 12%);
+  color: inherit;
+  text-decoration: none;
+}
+
+.catalog-card:active {
+  transform: scale(0.97);
+}
+
+/* Cuadro de tamaño fijo (1:1) para todas las fotos, sea cual sea su proporción: el recorte
+   (overflow) evita que una foto alta lo agrande y la imagen llena el cuadro sin deformarse.
+   El logo se ve si la foto falta (no hay ícono roto). */
+.photo-box {
+  position: relative;
+  flex: none;
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background:
+    url("../assets/logo-placeholder.webp") center / 40% no-repeat,
+    linear-gradient(135deg, #f6e7da, #ebd2c0);
+}
+
+.photo-box img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.catalog-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.catalog-card-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 0.75rem 0.5rem;
+}
+
+.catalog-card-category,
+.catalog-card-title {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.catalog-card-category {
+  color: var(--rosa-oscuro);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.catalog-card-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* Indicación visible de la tarjeta: toda la tarjeta es un solo enlace. */
+.catalog-card-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-height: 44px;
+  margin: 0 0.75rem 0.75rem;
+  border: 2px solid var(--rosa-oscuro);
+  border-radius: 8px;
+  color: var(--rosa-oscuro);
+  font-weight: 700;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.catalog-card:hover .catalog-card-cta,
+.catalog-card:focus-visible .catalog-card-cta {
+  background: var(--rosa-oscuro);
+  color: #fff;
+}
+
+.catalog-card-arrow {
+  transition: transform 0.15s;
+}
+
+.catalog-card:hover .catalog-card-arrow {
+  transform: translateX(3px);
+}
+
+.catalog-message {
+  display: grid;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.catalog-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+@media (min-width: 48rem) {
+  .catalog-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .catalog-logo {
+    width: 96px;
+    height: 96px;
+  }
+
+  .catalog-name {
+    font-size: 2.5rem;
+  }
+}
+
+.catalog .btn-primary {
+  background: var(--rosa-oscuro);
+}
+
+/* Detalle de un trabajo (mockup 2) */
+.detail {
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-bottom: 0.5rem;
+  color: var(--rosa-oscuro);
+  font-weight: 600;
+}
+
+.detail-photo {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.detail-tag {
+  display: inline-block;
+  margin: 1rem 0 0.5rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 12px;
+  background: var(--rosa-oscuro);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.detail-title {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.detail-description {
+  margin: 0 0 1.5rem;
+  line-height: 1.6;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* Pie del catálogo: solo el contacto por WhatsApp */
+.site-footer {
+  margin-top: 2rem;
+  padding: 1.5rem 1rem;
+  border-top: 2px solid var(--dorado);
+  border-radius: 12px 12px 0 0;
+  background: #fff;
+  text-align: center;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+.site-footer-title {
+  margin: 0 0 0.5rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--chocolate);
+}
+
+.site-footer-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--rosa-oscuro);
+  font-weight: 700;
+}
+
+.site-footer-link:focus-visible {
+  outline: 3px solid var(--rosa-oscuro);
+  outline-offset: 2px;
+}
+
+.site-footer-note {
+  color: var(--chocolate);
+}

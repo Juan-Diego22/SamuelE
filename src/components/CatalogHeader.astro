@@ -1,0 +1,21 @@
+---
+import { Image } from "astro:assets";
+import logo from "../assets/logo-samuele.jpg";
+import { SITE } from "../lib/site/contact";
+---
+
+<!-- Misma variante (160 px) que BrandHeader: el modo "compile" solo pre-optimiza las que ve el build. -->
+<header class="catalog-header">
+  <Image
+    class="catalog-logo"
+    src={logo}
+    format="webp"
+    width={160}
+    height={160}
+    alt="Logo de Samuelé Repostería"
+  />
+  <div>
+    <h1 class="catalog-name">{SITE.name}</h1>
+    <p class="catalog-tagline">{SITE.tagline}</p>
+  </div>
+</header>

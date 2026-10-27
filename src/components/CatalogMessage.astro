@@ -1,0 +1,20 @@
+---
+interface Props {
+  message: string;
+  kind?: "status" | "error";
+  action?: { href: string; label: string };
+}
+
+const { message, kind = "status", action } = Astro.props;
+---
+
+<div class="catalog-message">
+  <p class="notice" role={kind === "error" ? "alert" : "status"}>
+    {message}
+  </p>
+  {action && (
+    <a class="btn-primary btn-block" href={action.href}>
+      {action.label}
+    </a>
+  )}
+</div>

@@ -1,0 +1,19 @@
+---
+import { formatPhone, generalWhatsappUrl } from "../lib/catalog/whatsapp";
+import { SITE } from "../lib/site/contact";
+---
+
+<footer class="site-footer">
+  <h2 class="site-footer-title">CONTACTO</h2>
+  <p>
+    <a
+      class="site-footer-link"
+      href={generalWhatsappUrl()}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      WhatsApp: {formatPhone(SITE.whatsapp)}
+    </a>
+  </p>
+  <p class="site-footer-note">{SITE.footerNote}</p>
+</footer>

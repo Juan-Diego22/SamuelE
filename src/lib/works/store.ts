@@ -38,8 +38,8 @@ export interface WorksStore {
   categoryExists(id: number): Promise<boolean>;
   /** `"duplicate"` si el `id` ya existe (reintento idempotente). */
   insertWork(work: NewWork): Promise<"created" | "duplicate">;
-  /** Más reciente primero, con la categoría unida. */
-  listWorks(limit: number): Promise<ListedWork[]>;
+  /** Activos, más reciente primero, con la categoría unida; opcionalmente de una sola categoría. */
+  listWorks(limit: number, categoryId?: number): Promise<ListedWork[]>;
   /** ¿Ya existe un trabajo con este `id`? */
   workExists(id: string): Promise<boolean>;
   /** El trabajo **activo** con su categoría; `null` si no existe o está retirado. */
@@ -111,12 +111,19 @@ export function createD1WorksStore(d1: D1Database): WorksStore {
         throw error;
       }
     },
-    async listWorks(limit) {
+    async listWorks(limit, categoryId) {
       return db
         .select(listedColumns)
         .from(works)
         .innerJoin(categories, eq(works.categoryId, categories.id))
-        .where(isNull(works.retiredAt))
+        .where(
+          and(
+            isNull(works.retiredAt),
+            categoryId === undefined
+              ? undefined
+              : eq(works.categoryId, categoryId),
+          ),
+        )
         .orderBy(desc(works.createdAt))
         .limit(limit);
     },
@@ -240,10 +247,11 @@ export function createMemoryWorksStore(
       rows.set(work.id, { ...work });
       return "created" as const;
     },
-    async listWorks(limit: number) {
+    async listWorks(limit: number, categoryId?: number) {
       if (store.failList) throw new Error("fallo forzado de D1");
       return [...rows.values()]
         .filter((w) => w.retiredAt == null)
+        .filter((w) => categoryId === undefined || w.categoryId === categoryId)
         .sort((a, b) => b.createdAt - a.createdAt)
         .slice(0, limit)
         .map(listed);

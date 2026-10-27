@@ -1,12 +1,29 @@
 ---
+import { env } from "cloudflare:workers";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import BrandHeader from "../components/BrandHeader.astro";
+import CatalogView from "../components/CatalogView.astro";
+import { loadCatalog } from "../lib/catalog/load";
+import { SITE } from "../lib/site/contact";
+import { CATALOG_CACHE_CONTROL } from "../lib/catalog/view";
+import { createD1WorksStore } from "../lib/works/store";
 
-// SSR para poder medir el CPU real del Worker (D9).
+// SSR: el catálogo refleja al instante lo que cambia el panel (D1) y permite medir el CPU real (D9).
 export const prerender = false;
+
+const params = Astro.url.searchParams;
+const data = await loadCatalog(createD1WorksStore(env.DB), {
+  categoria: params.get("categoria"),
+  pagina: params.get("pagina"),
+});
+if (data.state === "error") Astro.response.status = 503;
+Astro.response.headers.set("Cache-Control", CATALOG_CACHE_CONTROL);
 ---
 
-<BaseLayout title="Samuelé Repostería">
-  <BrandHeader />
-  <p class="notice">Nuestro catálogo estará disponible muy pronto</p>
+<BaseLayout
+  title={SITE.name}
+  description={`${SITE.tagline}. Mira nuestros trabajos y pregunta por WhatsApp.`}
+  image="/og-logo.jpg"
+  variant="catalog"
+>
+  <CatalogView data={data} retryHref={Astro.url.pathname + Astro.url.search} />
 </BaseLayout>

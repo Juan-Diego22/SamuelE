@@ -12,12 +12,12 @@ Mockups interactivos de la Fase 1, diseñados móvil primero (390×844) a partir
 
 | # | Pantalla | Viewport | Contenido |
 |---|---|---|---|
-| 1 | Catálogo público | Móvil | Cabecera con logo, chips de categorías con scroll horizontal (Todos, Tortas, Postres, Rollos, Otros), grilla de 2 columnas, botón flotante de WhatsApp, pie con contacto, zona de atención y anticipación, texto "Cotiza por WhatsApp o llamada" (sin precios) |
-| 2 | Detalle de un trabajo | Móvil | Foto grande, categoría, título, descripción, botón "Preguntar por WhatsApp", regreso al catálogo |
+| 1 | Catálogo público | Móvil | Cabecera con logo, chips de categorías con scroll horizontal (Todos, Tortas, Postres, Rollos, Otros), grilla de 2 columnas (cada tarjeta con categoría, título y botón "Ver detalles"), pie con el WhatsApp de contacto y el texto "Cotiza por WhatsApp" (sin precios, sin botón flotante, zona de atención ni anticipación). **Implementado** (spec 005) |
+| 2 | Detalle de un trabajo | Móvil | Foto grande, categoría, título, descripción, botón "Preguntar por WhatsApp" con la frase ya escrita, regreso al catálogo. **Implementado** (spec 005) |
 | 3 | Inicio de sesión | Móvil | Logo grande, "Panel de trabajos", correo, contraseña, error genérico "Correo o contraseña incorrectos.", botón "Ingresar". Replica la referencia 4 |
 | 4 | Panel: lista de trabajos | Móvil | Logo pequeño, "Mis trabajos", "Salir", botón "+ Nuevo trabajo", tarjetas con miniatura, categoría, Editar y Retirar, y diálogo "¿Retirar este trabajo?" con Cancelar/Retirar. Replica la referencia 5. **Implementado** (spec 004): botones Editar/Retirar y diálogo |
 | 5 | Panel: nuevo/editar trabajo | Móvil | Foto (galería o cámara), categoría y título obligatorios; descripción opcional; botón "Publicar" ("Guardar" al editar). **Implementado** (spec 004): zona de foto con ícono de cámara, placeholders, "Selecciona una categoría" y asteriscos rojos |
-| 6 | Catálogo responsive | Tableta/escritorio | Cabecera horizontal con logo y lema, chips, grilla de 3 columnas, pie |
+| 6 | Catálogo responsive | Tableta/escritorio | Cabecera horizontal con logo y lema, chips, grilla de 3 columnas, pie con WhatsApp. **Implementado** (spec 005) |
 
 ## Branding
 
@@ -49,9 +49,9 @@ Mockups interactivos de la Fase 1, diseñados móvil primero (390×844) a partir
 
 ## Pendiente
 
-- **Estado vacío del catálogo** (HU-15): pedido en el brief, aún no está en el mockup.
+- **Estado vacío del catálogo** (HU-15): no está en el mockup; implementado en la spec 005 como un aviso amable con la cabecera y las categorías.
 - **Estados de error y de carga de foto** en "Nuevo/editar trabajo": pedidos, aún no están.
 - **Versión tableta/escritorio del panel**: solo existe la del catálogo.
 - ~~**Fuente script**: definir en un ADR cómo se servirá `Dancing Script`.~~ Resuelto en [ADR 0007](../adr/0007-fuentes-tipograficas.md): autoalojada en WOFF2.
-- **Datos de ejemplo**: teléfono, zona y anticipación del pie son ficticios (preguntas abiertas del PRD).
+- **Datos de contacto**: el pie usa el número de prueba +57 316 544 1337 hasta tener el de la administradora (spec 005).
 - **Verificación visual**: el HTML no se ha revisado aún en un navegador ni en un celular real (exigido por la definición de terminado).
