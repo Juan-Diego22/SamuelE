@@ -37,6 +37,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      # `/` lee D1: sin tablas respondería 503 y Lighthouse no podría auditarlo.
+      - run: npx wrangler d1 migrations apply samuele-reposteria --local
       - run: npx lhci autorun
       - uses: actions/upload-artifact@v4
         if: always()
