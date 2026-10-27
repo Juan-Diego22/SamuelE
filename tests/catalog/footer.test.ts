@@ -5,6 +5,7 @@ import DetailView from "../../src/components/DetailView.astro";
 import SiteFooter from "../../src/components/SiteFooter.astro";
 import { toCatalogCategories } from "../../src/lib/catalog/categories";
 import type { CatalogData } from "../../src/lib/catalog/load";
+import { formatPhone, normalizePhone } from "../../src/lib/catalog/whatsapp";
 import { SITE } from "../../src/lib/site/contact";
 import { DEFAULT_CATEGORIES } from "../../src/lib/works/store";
 
@@ -29,9 +30,9 @@ describe("pie del catálogo", () => {
   it("CONTACTO con el WhatsApp tocable y la leyenda", async () => {
     const html = await render(SiteFooter);
     expect(html).toContain("CONTACTO");
-    expect(html).toContain("+57 316 544 1337");
+    expect(html).toContain(formatPhone(SITE.whatsapp));
     expect(html).toContain(
-      `href="https://wa.me/573165441337?text=${encodeURIComponent(SITE.messages.general)}"`,
+      `href="https://wa.me/${normalizePhone(SITE.whatsapp)}?text=${encodeURIComponent(SITE.messages.general)}"`,
     );
     expect(html).toContain("Cotiza por WhatsApp");
   });

@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { loadDetail, toDetailView } from "../../src/lib/catalog/detail";
+import { normalizePhone } from "../../src/lib/catalog/whatsapp";
+import { SITE } from "../../src/lib/site/contact";
 import { createMemoryWorksStore } from "../../src/lib/works/store";
 import type { ListedWork, NewWork } from "../../src/lib/works/store";
 
@@ -47,7 +49,7 @@ describe("toDetailView", () => {
       alt: "Torta de Chocolate — Tortas",
     });
     expect(view.whatsappUrl).toBe(
-      `https://wa.me/573165441337?text=${encodeURIComponent('Hola Samuelé, me interesa el trabajo "Torta de Chocolate". ¿Me puedes dar más información?')}`,
+      `https://wa.me/${normalizePhone(SITE.whatsapp)}?text=${encodeURIComponent('Hola Samuelé, me interesa el trabajo "Torta de Chocolate". ¿Me puedes dar más información?')}`,
     );
   });
 

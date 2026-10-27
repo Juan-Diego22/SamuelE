@@ -18,7 +18,7 @@ Parámetros de consulta opcionales:
 | Categoría sin trabajos | **200** con el mensaje `emptyCategory` y enlace "Ver todos" |
 | Falla D1 | **503** con el mensaje `loadFailed`, enlace "Reintentar" a la misma dirección, cabecera y pie; sin detalles técnicos |
 
-Pie (siempre): sección **CONTACTO** con `WhatsApp: +57 316 544 1337` (`<a href="https://wa.me/573165441337?text=…general…">`) y la leyenda **"Cotiza por WhatsApp"**. No hay teléfono aparte, zona de atención, anticipación, precios ni botón flotante.
+Pie (siempre): sección **CONTACTO** con `WhatsApp: +57 3XX XXX XXXX` (`<a href="https://wa.me/57XXXXXXXXXX?text=…general…">`) y la leyenda **"Cotiza por WhatsApp"**. No hay teléfono aparte, zona de atención, anticipación, precios ni botón flotante.
 
 Cabeceras de la portada (`<head>`): `<title>Samuelé Repostería</title>`; `description` «Creamos momentos dulces. Mira nuestros trabajos y pregunta por WhatsApp.»; `og:title`, `og:description`, `og:type=website`, `og:url`, `og:locale=es_CO`, `og:image=/og-logo.jpg` (absoluta).
 
@@ -26,7 +26,7 @@ Cabeceras de la portada (`<head>`): `<title>Samuelé Repostería</title>`; `desc
 
 | Caso | Respuesta |
 |---|---|
-| `id` UUID de un trabajo activo | **200**. Enlace "← Volver" (a `/`, con `history.back()` si se vino del catálogo); foto grande (`md` + `lg` en `srcset`); etiqueta con la categoría; título (`<h1>`); descripción solo si existe (texto plano con saltos de línea); botón **"Preguntar por WhatsApp"** (`<a href="https://wa.me/573165441337?text=Hola%20Samuelé…">`) (sin leyendas debajo). Sin precios ni pie |
+| `id` UUID de un trabajo activo | **200**. Enlace "← Volver" (a `/`, con `history.back()` si se vino del catálogo); foto grande (`md` + `lg` en `srcset`); etiqueta con la categoría; título (`<h1>`); descripción solo si existe (texto plano con saltos de línea); botón **"Preguntar por WhatsApp"** (`<a href="https://wa.me/57XXXXXXXXXX?text=Hola%20Samuelé…">`) (sin leyendas debajo). Sin precios ni pie |
 | `id` que no es UUID, no existe o está retirado | **404** con cabecera de marca, "Este trabajo ya no está disponible." y botón "Ver el catálogo". Sin título, foto ni descripción del trabajo; sin etiquetas Open Graph del trabajo |
 | Falla D1 | **503** con "No pudimos cargar este trabajo. Intenta de nuevo en un momento.", "Reintentar" y "Ver el catálogo" |
 

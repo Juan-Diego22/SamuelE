@@ -35,8 +35,8 @@ npm run dev
 
 1. Cada tarjeta muestra su botón "Ver detalles". Tocarla (en cualquier punto, también el botón): foto grande, etiqueta, título, descripción (probar una con saltos de línea y con `<b>negrita</b>`: se ve literal).
 2. Un trabajo sin descripción: no hay hueco vacío.
-3. "Preguntar por WhatsApp" abre `https://wa.me/573165441337?text=…`; en el celular abre WhatsApp con «Hola Samuelé, me interesa el trabajo "…". ¿Me puedes dar más información?» sin escribir nada. Probar títulos con acentos, comillas y `&`.
-4. En el pie del catálogo: "WhatsApp: +57 316 544 1337" abre la conversación con el mensaje general; solo hay WhatsApp y la leyenda (sin teléfono, zona, anticipación ni botón flotante).
+3. "Preguntar por WhatsApp" abre `https://wa.me/57XXXXXXXXXX?text=…`; en el celular abre WhatsApp con «Hola Samuelé, me interesa el trabajo "…". ¿Me puedes dar más información?» sin escribir nada. Probar títulos con acentos, comillas y `&`.
+4. En el pie del catálogo: "WhatsApp: +57 3XX XXX XXXX" abre la conversación con el mensaje general; solo hay WhatsApp y la leyenda (sin teléfono, zona, anticipación ni botón flotante).
 5. "← Volver" tras filtrar y bajar en la lista: regresa al mismo filtro y a la misma posición. Abrir un detalle por enlace directo (pegado en otra pestaña) y pulsar "← Volver": va a `/`.
 6. Cambiar `whatsapp` en `src/lib/site/contact.ts`: el pie y el detalle usan el nuevo número tras recargar (volver al valor de prueba).
 

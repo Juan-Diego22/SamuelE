@@ -53,5 +53,5 @@ Mockups interactivos de la Fase 1, diseñados móvil primero (390×844) a partir
 - **Estados de error y de carga de foto** en "Nuevo/editar trabajo": pedidos, aún no están.
 - **Versión tableta/escritorio del panel**: solo existe la del catálogo.
 - ~~**Fuente script**: definir en un ADR cómo se servirá `Dancing Script`.~~ Resuelto en [ADR 0007](../adr/0007-fuentes-tipograficas.md): autoalojada en WOFF2.
-- **Datos de contacto**: el pie usa el número de prueba +57 316 544 1337 hasta tener el de la administradora (spec 005).
+- **Datos de contacto**: el pie usa el número de WhatsApp de la administradora, que vive en `src/lib/site/contact.ts` (spec 005).
 - **Verificación visual**: el HTML no se ha revisado aún en un navegador ni en un celular real (exigido por la definición de terminado).
