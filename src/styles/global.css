@@ -541,14 +541,15 @@ main.catalog {
 }
 
 .chips-nav {
-  margin: 0 -1rem 1rem;
+  margin: 0 -1rem 0.5rem;
 }
 
 .chips {
   display: flex;
   gap: 0.5rem;
   margin: 0;
-  padding: 0.25rem 1rem;
+  /* El espacio inferior deja la barra de desplazamiento debajo de los botones, sin pisarlos. */
+  padding: 0.25rem 1rem 0.875rem;
   list-style: none;
   overflow-x: auto;
   scrollbar-width: thin;
