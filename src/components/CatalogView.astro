@@ -1,0 +1,62 @@
+---
+import CatalogCard from "./CatalogCard.astro";
+import CatalogHeader from "./CatalogHeader.astro";
+import CatalogMessage from "./CatalogMessage.astro";
+import CategoryChips from "./CategoryChips.astro";
+import SiteFooter from "./SiteFooter.astro";
+import { CATALOG_MESSAGES } from "../lib/catalog/messages";
+import type { CatalogData } from "../lib/catalog/load";
+
+interface Props {
+  data: CatalogData;
+  /** Dirección actual (ruta y consulta) para "Reintentar". */
+  retryHref?: string;
+}
+
+const { data, retryHref = "/" } = Astro.props;
+const { state, categories, cards, hasMore, page, active } = data;
+const nextParams = new URLSearchParams();
+if (active) nextParams.set("categoria", active);
+nextParams.set("pagina", String(page + 1));
+const nextHref = `/?${nextParams.toString()}`;
+// Las fotos de la primera pantalla no se difieren.
+const PRIORITY_COUNT = 4;
+---
+
+<CatalogHeader />
+{state !== "error" && <CategoryChips categories={categories} />}
+{state === "error" && (
+  <CatalogMessage
+    kind="error"
+    message={CATALOG_MESSAGES.loadFailed}
+    action={{ href: retryHref, label: CATALOG_MESSAGES.retry }}
+  />
+)}
+{state === "empty" && <CatalogMessage message={CATALOG_MESSAGES.empty} />}
+{state === "emptyCategory" && (
+  <CatalogMessage
+    message={CATALOG_MESSAGES.emptyCategory}
+    action={{ href: "/", label: CATALOG_MESSAGES.seeAll }}
+  />
+)}
+{state === "items" && (
+  <ul class="catalog-grid">
+    {cards.map((card, index) => (
+      <CatalogCard
+        card={card}
+        priority={index < PRIORITY_COUNT}
+        first={index === 0}
+      />
+    ))}
+  </ul>
+)}
+{state === "items" && hasMore && (
+  <a class="btn-primary btn-block catalog-more" href={nextHref}>
+    {CATALOG_MESSAGES.loadMore}
+  </a>
+)}
+<SiteFooter />
+
+<script>
+  import "../scripts/photo-fallback";
+</script>

@@ -1,0 +1,30 @@
+---
+import { env } from "cloudflare:workers";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import DetailView from "../../components/DetailView.astro";
+import { loadDetail, shareDescription } from "../../lib/catalog/detail";
+import { CATALOG_CACHE_CONTROL } from "../../lib/catalog/view";
+import { SITE } from "../../lib/site/contact";
+import { createD1WorksStore } from "../../lib/works/store";
+
+export const prerender = false;
+
+const data = await loadDetail(createD1WorksStore(env.DB), Astro.params.id);
+if (data.state === "notFound") Astro.response.status = 404;
+if (data.state === "error") Astro.response.status = 503;
+Astro.response.headers.set("Cache-Control", CATALOG_CACHE_CONTROL);
+
+const title =
+  data.state === "found"
+    ? `${data.view.title} | ${SITE.name}`
+    : `Trabajo no disponible | ${SITE.name}`;
+---
+
+<BaseLayout
+  title={title}
+  description={data.state === "found" ? shareDescription(data.view) : undefined}
+  image={data.state === "found" ? data.view.photoMd : undefined}
+  variant="catalog"
+>
+  <DetailView data={data} retryHref={Astro.url.pathname} />
+</BaseLayout>

@@ -48,6 +48,12 @@ Tras 5 intentos fallidos en 15 minutos el acceso se bloquea 15 minutos. Para lev
 
 Si cambias `wrangler.jsonc`, regenera los tipos con `npx wrangler types`.
 
+## Catálogo público
+
+`/` es el catálogo que se comparte con los clientes: trabajos activos (más reciente primero), filtro por categoría (`/?categoria=tortas`) y "Ver más" de 24 en 24. Cada trabajo tiene su detalle en `/trabajos/{id}` con el botón "Preguntar por WhatsApp", que abre la conversación con una frase ya escrita que menciona el trabajo. Se renderiza en el servidor en cada visita, así que lo que cambia el panel se ve en la siguiente visita ([ADR 0009](docs/adr/0009-catalogo-publico.md)).
+
+**Cambiar el número de WhatsApp o las frases**: se editan en `src/lib/site/contact.ts` (único lugar) y se despliega. Por ahora hay un número de prueba.
+
 ## Trabajos y fotos
 
 `/admin` lista "Mis trabajos" (cada tarjeta con "Editar" y "Retirar"), `/admin/works/new` publica uno (foto, categoría y título obligatorios; descripción opcional) y `/admin/works/{id}/edit` lo edita (también reemplaza la foto). Retirar es un borrado lógico (`retired_at`, migración `0002`): el trabajo deja de verse, pero sus archivos no se borran. La foto se optimiza en el navegador (ADR 0005) y `POST /api/admin/works` la valida y la guarda: originales privadas y derivadas públicas en R2 (binding `MEDIA`, bucket `samuele-media`), datos en D1 (tablas `categories` y `works`). Las derivadas se sirven en `GET /media/works/...`. Rutas de API: `POST /api/admin/works` (crear), `PUT /api/admin/works/{id}` (editar) y `POST /api/admin/works/{id}/retire` (retirar).
@@ -73,12 +79,14 @@ npm test               # Vitest
 
 ```text
 src/layouts/      # BaseLayout: html, meta viewport, fuentes y estilos globales
-src/components/   # BrandHeader, PanelHeader, WorksPanel, WorkCard, WorkForm y NewWorkView
-src/pages/        # index.astro (inicio), 404.astro, admin/ (login, lista, nuevo y editar trabajo), api/admin/ (logout, works, works/{id} y works/{id}/retire) y media/
+src/components/   # BrandHeader, PanelHeader, WorksPanel, WorkCard, WorkForm y NewWorkView; catálogo: CatalogView, DetailView, CatalogCard, CategoryChips y SiteFooter
+src/pages/        # index.astro (catálogo), trabajos/[id].astro (detalle), 404.astro, admin/ (login, lista, nuevo y editar trabajo), api/admin/ (logout, works, works/{id} y works/{id}/retire) y media/
 src/lib/auth/     # autenticación: credenciales, sesiones, bloqueo, Origin y almacén D1
 src/lib/works/    # trabajos: validación, bytes de imagen, claves R2, caso de uso y almacenes
+src/lib/catalog/  # catálogo público: carga, tarjetas, categorías, detalle y enlaces de WhatsApp
+src/lib/site/     # contact.ts: número de WhatsApp y frases (único lugar a editar)
 src/lib/photo/    # optimización de la foto en el navegador
-src/scripts/      # work-form.ts: lógica del formulario
+src/scripts/      # work-form.ts, retire-dialog.ts, back-link.ts y photo-fallback.ts
 src/db/           # schema.ts (Drizzle): sessions, login_attempts, categories y works
 src/middleware.ts # protege /admin/* y /api/admin/*
 migrations/       # SQL de D1 generado con drizzle-kit
