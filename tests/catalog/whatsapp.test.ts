@@ -53,7 +53,7 @@ describe("mensajes y enlaces", () => {
 
   it("los enlaces del sitio usan el número configurado", () => {
     expect(generalWhatsappUrl()).toBe(
-      `https://wa.me/573165441337?text=${encodeURIComponent(SITE.messages.general)}`,
+      `https://wa.me/${normalizePhone(SITE.whatsapp)}?text=${encodeURIComponent(SITE.messages.general)}`,
     );
     expect(workWhatsappUrl("Brownies")).toContain(
       encodeURIComponent('"Brownies"'),

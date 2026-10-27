@@ -10,7 +10,7 @@ Se publica lo que ya existe en el panel:
 
 1. **Catálogo (`/`)**: la página de inicio pasa de placeholder a catálogo renderizado en el servidor (SSR) leyendo D1 en cada visita. Cabecera compacta, chips de categorías como enlaces (`/?categoria=tortas`), grilla de tarjetas (2 columnas móvil, 3 desde tableta), "Ver más" sin JavaScript, estados vacío y de error, pie con WhatsApp.
 2. **Detalle (`/trabajos/{id}`)**: foto grande (`md` y `lg` con `srcset`), categoría, título, descripción y "Preguntar por WhatsApp" con la frase ya escrita. Retirado o inexistente: 404 amable.
-3. **Contacto centralizado**: `src/lib/site/contact.ts` guarda el número de prueba (+57 316 544 1337) y las frases; `src/lib/catalog/whatsapp.ts` arma los enlaces `wa.me`.
+3. **Contacto centralizado**: `src/lib/site/contact.ts` guarda el número de WhatsApp y las frases; `src/lib/catalog/whatsapp.ts` arma los enlaces `wa.me`.
 4. **Vista previa al compartir**: `BaseLayout` acepta descripción e imagen Open Graph; la portada usa un logo estático y cada detalle, su propia foto.
 5. **Frescura**: sin caché propia (SSR + `Cache-Control: no-cache`): lo que cambia la administradora se ve en la siguiente visita (mejor que el plazo de 60 s de la spec).
 

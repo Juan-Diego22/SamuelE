@@ -52,7 +52,7 @@ Si cambias `wrangler.jsonc`, regenera los tipos con `npx wrangler types`.
 
 `/` es el catálogo que se comparte con los clientes: trabajos activos (más reciente primero), filtro por categoría (`/?categoria=tortas`) y "Ver más" de 24 en 24. Cada trabajo tiene su detalle en `/trabajos/{id}` con el botón "Preguntar por WhatsApp", que abre la conversación con una frase ya escrita que menciona el trabajo. Se renderiza en el servidor en cada visita, así que lo que cambia el panel se ve en la siguiente visita ([ADR 0009](docs/adr/0009-catalogo-publico.md)).
 
-**Cambiar el número de WhatsApp o las frases**: se editan en `src/lib/site/contact.ts` (único lugar) y se despliega. Por ahora hay un número de prueba.
+**Cambiar el número de WhatsApp o las frases**: se editan en `src/lib/site/contact.ts` (único lugar) y se despliega. Está configurado el número de la administradora.
 
 ## Trabajos y fotos
 

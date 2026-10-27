@@ -171,7 +171,7 @@ Si algo falla al cargar el catálogo, la persona ve un mensaje sencillo con la p
 - **FR-019**: El pie del catálogo MUST mostrar la sección CONTACTO con el WhatsApp y su número (tocable para abrir la conversación) y la leyenda "Cotiza por WhatsApp". El pie MUST NOT incluir zona de atención, anticipación ni teléfono aparte (decisión del negocio, ajustada respecto al mockup).
 - **FR-020**: El número de WhatsApp y el texto de los mensajes prellenados MUST definirse en un único lugar de configuración; cambiar el número MUST bastar para que el botón del detalle y el pie usen el nuevo valor, sin modificar pantallas.
 - **FR-021**: El sistema MUST aceptar el número de WhatsApp escrito con espacios, signos o prefijo y MUST construir el enlace usando solo sus dígitos; si el número configurado no es válido, el despliegue o la prueba automatizada MUST fallar de forma visible en lugar de publicar un botón roto.
-- **FR-022**: En esta entrega, el número de contacto MUST ser el número de prueba +57 316 544 1337; se cambia por el de la administradora tras las pruebas.
+- **FR-022**: El número de contacto MUST ser el de la administradora; durante las pruebas se usó un número de prueba del desarrollador y se cambió al real una vez superadas.
 - **FR-023**: Ninguna pantalla pública MUST mostrar precios; el catálogo indica en el pie que se cotiza por WhatsApp (sin repetirlo en cada detalle), y no existe carrito ni pago.
 
 **Actualización con los cambios del panel**
@@ -221,7 +221,7 @@ Si algo falla al cargar el catálogo, la persona ve un mensaje sencillo con la p
 
 ## Assumptions
 
-- **Número de WhatsApp de prueba**: +57 316 544 1337 (el del desarrollador). Se mantiene como valor de configuración, sin que quede fijo dentro de las pantallas, para cambiarlo luego por el de la administradora.
+- **Número de WhatsApp de prueba**: el del desarrollador durante las pruebas y, desde el 2026-10-28, el de la administradora. Se mantiene como valor de configuración, sin que quede fijo dentro de las pantallas, para cambiarlo luego por el de la administradora.
 - Esta funcionalidad se apoya en lo ya construido: trabajos con foto en tres tamaños y su servicio público de fotos (003), edición y retiro lógico (004) y el panel protegido por sesión (002). No agrega datos nuevos a los trabajos.
 - **Pie reducido**: por decisión del negocio, el pie solo lleva el contacto por WhatsApp y la leyenda "Cotiza por WhatsApp"; zona de atención, anticipación y teléfono aparte quedan fuera (el mockup los traía como datos ficticios). Si luego se quieren, se agregan en la configuración central. Editar el contacto desde el panel queda fuera de alcance.
 - **Sin botón flotante**: por decisión del negocio, el catálogo no lleva botón flotante; el mockup 1 lo traía y se omite a propósito.

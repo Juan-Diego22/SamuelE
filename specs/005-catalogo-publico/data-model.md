@@ -57,7 +57,7 @@ Filtro inválido o ausente → "Todos". Ninguna categoría se oculta, haya o no 
 |---|---|---|
 | `name` | `Samuelé Repostería` | |
 | `tagline` | `Creamos momentos dulces` | |
-| `whatsapp` | `+57 316 544 1337` | Admite espacios, `+`, guiones; se usan solo los dígitos (`573165441337`); 8–15 dígitos; prueba que lo valida |
+| `whatsapp` | `+57 3XX XXX XXXX` | Admite espacios, `+`, guiones; se usan solo los dígitos (`57XXXXXXXXXX`); 8–15 dígitos; prueba que lo valida |
 | `messages.general` | `Hola Samuelé, vi su catálogo y quiero más información.` | Enlace del pie |
 | `messages.work` | `Hola Samuelé, me interesa el trabajo "{title}". ¿Me puedes dar más información?` | `{title}` = título o categoría |
 | `footerNote` | `Cotiza por WhatsApp` | Leyenda del pie (sin precios) |

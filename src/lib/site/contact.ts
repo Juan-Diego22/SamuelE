@@ -5,8 +5,8 @@
 export const SITE = {
   name: "Samuelé Repostería",
   tagline: "Creamos momentos dulces",
-  /** Número de prueba; se cambia por el de la administradora tras las pruebas. */
-  whatsapp: "+57 316 544 1337",
+  /** Número de WhatsApp de la administradora. */
+  whatsapp: "+57 320 735 9876",
   footerNote: "Cotiza por WhatsApp",
   messages: {
     general: "Hola Samuelé, vi su catálogo y quiero más información.",

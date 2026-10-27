@@ -11,7 +11,7 @@ export function normalizePhone(raw: string): string | null {
     : null;
 }
 
-/** Formato legible: `+57 316 544 1337` para números colombianos; `+` y los dígitos en otro caso. */
+/** Formato legible: `+57 3XX XXX XXXX` para números colombianos; `+` y los dígitos en otro caso. */
 export function formatPhone(raw: string): string {
   const digits = raw.replace(/\D/g, "");
   const colombian = /^57(\d{3})(\d{3})(\d{4})$/.exec(digits);

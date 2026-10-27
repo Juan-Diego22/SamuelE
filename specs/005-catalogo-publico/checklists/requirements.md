@@ -31,5 +31,5 @@
 
 ## Notes
 
-- Resuelto: número de prueba +57 316 544 1337; pie reducido a WhatsApp; frase prellenada definida.
+- Resuelto: número de WhatsApp (de prueba al inicio, luego el de la administradora); pie reducido a WhatsApp; frase prellenada definida.
 - Decisiones tomadas por defecto (revisables): categorías sin trabajos siguen visibles con mensaje; paginación de 24 en 24; frescura de hasta ~60 s; imagen de vista previa de la portada = logo.

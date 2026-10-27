@@ -28,7 +28,7 @@ No quedan marcadores `NEEDS CLARIFICATION`. Aquí se justifican las decisiones d
 - **Alternativas**: guardar scroll en `sessionStorage` (descartada: el navegador ya lo hace con `history.back()`); abrir el detalle como modal (descartada: rompe enlaces compartibles).
 
 ### D6. Contacto en un módulo de configuración
-- **Decisión**: `src/lib/site/contact.ts` exporta `SITE = { name, tagline, whatsapp: "+57 316 544 1337", messages: { general, work } }`. `whatsapp.ts` normaliza a dígitos (`573165441337`), valida (8–15 dígitos, E.164) y arma `https://wa.me/{dígitos}?text={encodeURIComponent(texto)}`. Una prueba falla si el número configurado es inválido (FR-021).
+- **Decisión**: `src/lib/site/contact.ts` exporta `SITE = { name, tagline, whatsapp: "+57 3XX XXX XXXX", messages: { general, work } }`. `whatsapp.ts` normaliza a dígitos (`57XXXXXXXXXX`), valida (8–15 dígitos, E.164) y arma `https://wa.me/{dígitos}?text={encodeURIComponent(texto)}`. Una prueba falla si el número configurado es inválido (FR-021).
 - **Frases** (FR-017, FR-018): general «Hola Samuelé, vi su catálogo y quiero más información.»; trabajo «Hola Samuelé, me interesa el trabajo "{título}". ¿Me puedes dar más información?» con el título (o la categoría, si no tiene) sustituido.
 - **Motivo**: no es un secreto, así que no va en variables de entorno; versionarlo permite revisarlo en PR. Cambiarlo = una línea y un despliegue (SC-004).
 - **Alternativas**: variable de entorno de Cloudflare (descartada: invisible en el repositorio y sin prueba); tabla en D1 editable (descartada: fuera de alcance, HU-05 permite texto fijo).
