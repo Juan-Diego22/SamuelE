@@ -1,6 +1,8 @@
 # Samuelé Repostería
 
-Sitio web de Samuelé Repostería: catálogo de pasteles y postres. Esta primera versión es un esqueleto desplegado de punta a punta: página de inicio con la identidad del negocio, validación automática de cada cambio y publicación automática en Cloudflare Workers.
+Sitio web de Samuelé Repostería: catálogo público de pasteles y postres que la administradora comparte con sus clientes, y un panel privado con el que ella misma publica, edita y retira sus trabajos. La primera fase está terminada y en producción: la administradora ya carga sus trabajos, comparte el enlace y recibe pedidos por WhatsApp.
+
+Corre en Cloudflare Workers (Astro con renderizado en el servidor), D1 para los datos y R2 para las fotos, todo dentro de los planes gratuitos. Cada cambio se valida con CI y se publica al fusionar en `main`.
 
 ## Requisitos previos
 
@@ -10,9 +12,13 @@ Sitio web de Samuelé Repostería: catálogo de pasteles y postres. Esta primera
 
 ```bash
 npm ci
-npm run dev                        # http://localhost:4321
-npm run build && npm run preview   # igual que producción
+cp .dev.vars.example .dev.vars               # credencial local del panel (ignorado por git)
+npx wrangler d1 migrations apply DB --local  # crea las tablas y las 4 categorías
+npm run dev                                  # http://localhost:4321
+npm run build && npm run preview             # igual que producción
 ```
+
+Sin `.dev.vars` el catálogo funciona, pero no se puede iniciar sesión en el panel. Las fotos usan un bucket R2 simulado local.
 
 Para probar en un celular real en la misma red: `npm run dev -- --host` y abrir `http://<IP-de-la-computadora>:4321`.
 
@@ -24,7 +30,7 @@ El panel vive en `/admin` y exige iniciar sesión en `/admin/login` (ADR 0006). 
 
 ```bash
 cp .dev.vars.example .dev.vars               # editar ADMIN_EMAIL y ADMIN_PASSWORD (ignorado por git)
-npx wrangler d1 migrations apply DB --local  # crea las tablas sessions y login_attempts
+npx wrangler d1 migrations apply DB --local  # crea las tablas (sessions, login_attempts, categories y works)
 ```
 
 **Configuración en producción (una sola vez)**
@@ -98,7 +104,7 @@ docs/adr/         # decisiones de arquitectura
 
 ## Validación de un PR
 
-Cada PR ejecuta `ci.yml`: tipos, estilo, pruebas y build. Lighthouse corre como job informativo (no bloquea) y sube su reporte como artefacto. La plantilla del PR pide registrar la prueba en celular real. `main` solo admite cambios por PR con squash.
+Cada PR ejecuta `ci.yml`: `npm ci`, tipos, estilo, pruebas y build en un entorno limpio. Lighthouse corre como job informativo (no bloquea) y sube su reporte como artefacto. La plantilla del PR pide registrar la prueba en celular real. `main` solo admite cambios por PR con squash.
 
 ## Publicación
 
@@ -114,3 +120,5 @@ Al fusionar en `main`, `deploy.yml` vuelve a validar, construye y publica con `w
 - Decisiones: [docs/adr/](docs/adr/), incluido el [ADR 0008](docs/adr/0008-herramientas-de-desarrollo.md) de herramientas.
 - Guía del inicio de sesión: [specs/002-admin-login/quickstart.md](specs/002-admin-login/quickstart.md).
 - Guía de la funcionalidad: [specs/001-project-skeleton/quickstart.md](specs/001-project-skeleton/quickstart.md).
+- Producto: [docs/prd-fase-1.md](docs/prd-fase-1.md) y [docs/design/mockups.md](docs/design/mockups.md).
+- Guías de las demás funcionalidades: `specs/00N-*/quickstart.md` (panel, edición y retiro, catálogo público).
